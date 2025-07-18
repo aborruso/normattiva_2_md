@@ -7,7 +7,7 @@ Questa directory contiene file di esempio utili per testare il convertitore Akom
 Per eseguire un test, puoi usare il seguente comando (dalla root del progetto):
 
 ```bash
-python convert_akomantoso.py test_data/20050516_005G0104_VIGENZA_20250130.xml output.md
+python3 convert_akomantoso.py test_data/20050516_005G0104_VIGENZA_20250130.xml output.md
 ```
 
 Questo genererà un file `output.md` nella directory corrente con il contenuto convertito.
