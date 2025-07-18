@@ -32,6 +32,15 @@ Questo file documenta gli avanzamenti significativi, le decisioni chiave e le mo
 
 ### Ripristino della Pipeline di Conversione XML-to-Markdown
 
-- **Ripristinato `convert_json_to_markdown.py`:** Il contenuto del file `convert_json_to_markdown.py` è stato ripristinato alla sua versione originale (`convert_akomantoso.py`) che accetta direttamente l'XML come input.
-- **Aggiornato `fetch_normattiva.py`:** Lo script `fetch_normattiva.py` è stato modificato per chiamare direttamente la funzione di conversione XML-to-Markdown (ora in `convert_json_to_markdown.py`) quando l'output desiderato è Markdown, eliminando il passaggio intermedio JSON per questo formato.
-- **Aggiornato `setup.py`:** Il file `setup.py` è stato aggiornato per riflettere il ripristino del nome del modulo a `convert_akomantoso` e il punto di ingresso del tool, in preparazione per la ridenominazione del file.
+- **Decisione di Ripristino:** Si è deciso di ripristinare la pipeline di conversione basata direttamente sull'XML, utilizzando `tulit` solo per il download del file Akoma Ntoso e il nostro script originale per la conversione in Markdown. Questo per mantenere un maggiore controllo sulla formattazione e per risolvere le discrepanze tra l'output JSON di `tulit` e il testo consolidato desiderato.
+- **Rinominato `convert_json_to_markdown.py` a `convert_akomantoso.py`:** Il file del convertitore è stato rinominato al suo nome originale.
+- **Ripristinato `convert_akomantoso.py`:** Il contenuto del file `convert_akomantoso.py` è stato ripristinato alla sua versione originale che accetta direttamente l'XML come input. Sono state applicate correzioni per gli errori di sintassi e di indentazione che si erano manifestati durante i tentativi di modifica.
+- **Aggiornato `fetch_normattiva.py`:** Lo script `fetch_normattiva.py` è stato modificato per chiamare direttamente la funzione di conversione XML-to-Markdown (ora in `convert_akomantoso.py`) quando l'output desiderato è Markdown, eliminando il passaggio intermedio JSON per questo formato. L'istruzione di importazione è stata corretta per riflettere il nome del file ripristinato.
+- **Aggiornato `setup.py`:** Il file `setup.py` è stato aggiornato per riflettere il ripristino del nome del modulo a `convert_akomantoso` e il punto di ingresso del tool.
+- **Test di Esecuzione:** Eseguito con successo lo script `fetch_normattiva.py` con l'opzione `--format markdown`, confermando il corretto funzionamento della pipeline ripristinata.
+
+### Gestione File di Output
+
+- **Rimozione File di Output:** Tutti i file `output*.md` sono stati rimossi dalla root del progetto.
+- **Aggiornamento `.gitignore`:** Il pattern `output*.md` è stato aggiunto al file `.gitignore` per prevenire il tracciamento futuro di questi file.
+- **Commit e Push:** Le modifiche sono state committate e pushate al repository remoto.
