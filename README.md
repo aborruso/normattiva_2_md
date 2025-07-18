@@ -19,6 +19,7 @@
 ## 📦 Installazione
 
 ### Metodo 1: Eseguibile Standalone (Raccomandato)
+
 Scarica l'eseguibile precompilato dalla sezione [Releases](https://github.com/yourusername/akoma2md/releases):
 
 ```bash
@@ -31,12 +32,14 @@ akoma2md.exe input.xml output.md
 ```
 
 ### Metodo 2: Installazione via pip
+
 ```bash
 pip install akoma2md
 akoma2md input.xml output.md
 ```
 
 ### Metodo 3: Installazione da sorgenti
+
 ```bash
 git clone https://github.com/yourusername/akoma2md.git
 cd akoma2md
@@ -45,6 +48,7 @@ akoma2md input.xml output.md
 ```
 
 ### Metodo 4: Esecuzione diretta
+
 ```bash
 python convert_akomantoso.py input.xml output.md
 ```
@@ -52,6 +56,7 @@ python convert_akomantoso.py input.xml output.md
 ## 💻 Utilizzo
 
 ### Sintassi di base
+
 ```bash
 # Argomenti posizionali (più semplice)
 akoma2md input.xml output.md
@@ -62,6 +67,7 @@ akoma2md --input input.xml --output output.md
 ```
 
 ### Esempi pratici
+
 ```bash
 # Convertire un decreto legislativo
 akoma2md decreto_82_2005.xml codice_amministrazione_digitale.md
@@ -74,6 +80,7 @@ akoma2md --help
 ```
 
 ### Opzioni disponibili
+
 ```
 usage: akoma2md [-h] [-i INPUT] [-o OUTPUT] [input_file] [output_file]
 
@@ -101,6 +108,7 @@ Lo strumento supporta documenti XML in formato **Akoma Ntoso 3.0**, inclusi:
 - 📜 **Altri atti normativi**
 
 ### Strutture supportate
+
 - ✅ Preamboli e intestazioni
 - ✅ Capitoli e sezioni
 - ✅ Articoli e commi
@@ -119,6 +127,7 @@ Il Markdown generato include:
 - **Struttura pulita e leggibile**
 
 ### Esempio di output
+
 ```markdown
 # Art. 1 - Definizioni
 
@@ -136,10 +145,12 @@ Il Markdown generato include:
 ## 🔧 Sviluppo
 
 ### Requisiti
+
 - Python 3.7+
 - Nessuna dipendenza esterna
 
 ### Setup ambiente di sviluppo
+
 ```bash
 git clone https://github.com/yourusername/akoma2md.git
 cd akoma2md
@@ -149,12 +160,14 @@ pip install -e .
 ```
 
 ### Build dell'eseguibile
+
 ```bash
 pip install pyinstaller
 pyinstaller --onefile --name akoma2md convert_akomantoso.py
 ```
 
 ### Test
+
 ```bash
 # Test di base
 python convert_akomantoso.py sample.xml output.md
