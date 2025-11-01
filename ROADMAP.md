@@ -1,0 +1,576 @@
+# Roadmap - akoma2md
+
+Punti da attenzionare per le prossime release, basati su code review approfondita.
+
+## 🟡 HIGH PRIORITY - v1.5.0 (Prossima Release)
+
+### 1. Refactoring `main()` function
+
+**Problema**: Funzione troppo lunga (143 linee) con responsabilità multiple
+
+**Soluzione**:
+```python
+def parse_args():
+    """Parse command line arguments"""
+    # 30 linee
+
+def process_url(url, output_file, keep_xml, quiet):
+    """Handle URL-based conversion"""
+    # 40 linee
+
+def process_file(file_path, output_file, quiet):
+    """Handle local file conversion"""
+    # 20 linee
+
+def main():
+    """Main entry point - orchestration only"""
+    # 30 linee
+```
+
+**Benefici**:
+- Miglior testabilità
+- Codice più manutenibile
+- Ogni funzione < 50 linee
+
+**File**: `convert_akomantoso.py:807-950`
+
+---
+
+### 2. Fix HTML Parsing Fragility
+
+**Problema**: Uso regex per parsing HTML (linee 300-328)
+
+**Attuale**:
+```python
+# Fragile - si rompe se HTML cambia
+match_gu = re.search(r'name="atto\.dataPubblicazioneGazzetta"[^>]*value="([^"]+)"', html)
+```
+
+**Soluzione**:
+```python
+from bs4 import BeautifulSoup
+
+def extract_params_from_normattiva_url(url, session=None, quiet=False):
+    soup = BeautifulSoup(html, 'html.parser')
+    input_gu = soup.find('input', {'name': 'atto.dataPubblicazioneGazzetta'})
+    params['dataGU'] = input_gu['value'] if input_gu else None
+```
+
+**Dependency**: `beautifulsoup4>=4.9.0`
+
+**Benefici**:
+- Più robusto a cambi HTML
+- Più leggibile
+- Best practice parsing HTML
+
+**File**: `convert_akomantoso.py:300-328`
+
+---
+
+### 3. Network Error Recovery
+
+**Problema**: Nessun retry su errori di rete
+
+**Soluzione**:
+```python
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+def create_session_with_retry():
+    session = requests.Session()
+    retry = Retry(
+        total=3,
+        backoff_factor=1,
+        status_forcelist=[500, 502, 503, 504],
+        allowed_methods=["GET"]
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('https://', adapter)
+    return session
+```
+
+**Benefici**:
+- Maggiore affidabilità
+- Gestione errori temporanei
+- Migliore UX
+
+**File**: `convert_akomantoso.py:267-383`
+
+---
+
+### 4. Complete Footnote Implementation
+
+**Problema**: Implementazione semplificata senza global counter (linee 230-236)
+
+**Attuale**:
+```python
+# Simplified - no global counter
+footnote_ref = f"[^{footnote_content[:10].replace(' ', '')}]"
+```
+
+**Soluzione**:
+```python
+class MarkdownGenerator:
+    def __init__(self):
+        self.footnote_counter = 0
+        self.footnotes = []
+
+    def add_footnote(self, content):
+        self.footnote_counter += 1
+        ref = f"[^{self.footnote_counter}]"
+        self.footnotes.append(f"{ref}: {content}")
+        return ref
+
+    def get_footnotes_section(self):
+        if not self.footnotes:
+            return ""
+        return "\n\n---\n\n" + "\n\n".join(self.footnotes)
+```
+
+**Benefici**:
+- Footnote numerate correttamente
+- Definizioni a fine documento
+- Formato Markdown standard
+
+**File**: `convert_akomantoso.py:230-236`
+
+---
+
+### 5. Integration Tests
+
+**Problema**: Mancano test end-to-end e scenari errore
+
+**Da aggiungere**:
+```python
+class IntegrationTests(unittest.TestCase):
+    @mock.patch('requests.Session.get')
+    def test_url_download_with_network_error(self, mock_get):
+        """Test retry logic on network errors"""
+
+    def test_url_to_markdown_complete_flow(self):
+        """Test complete URL → Markdown conversion"""
+
+    def test_large_xml_rejected(self):
+        """Test >50MB file rejection"""
+
+    def test_malformed_xml_handling(self):
+        """Test malformed XML error handling"""
+```
+
+**File**: Nuovo `tests/test_integration.py`
+
+---
+
+### 6. Precompile Regex Patterns
+
+**Problema**: Pattern compilati ad ogni chiamata (performance)
+
+**Soluzione**:
+```python
+# A inizio modulo (dopo imports)
+CAPO_PATTERN = re.compile(r'\bCapo\s+[IVX]+', re.IGNORECASE)
+SEZIONE_PATTERN = re.compile(r'\bSezione\s+[IVX]+', re.IGNORECASE)
+CHAPTER_PATTERN = re.compile(r'^((?:Capo|Sezione)\s+[IVX]+)\s+(.+)$', re.IGNORECASE)
+WHITESPACE_PATTERN = re.compile(r'\s+')
+SEPARATOR_PATTERN = re.compile(r'^-+$')
+HIDDEN_INPUT_PATTERN = re.compile(r'name="atto\.([^"]+)"[^>]*value="([^"]+)"')
+
+# Uso nelle funzioni:
+def parse_chapter_heading(heading_text):
+    has_capo = CAPO_PATTERN.search(heading_text)
+    has_sezione = SEZIONE_PATTERN.search(heading_text)
+```
+
+**Benefici**:
+- Performance: ~20-30% più veloce su documenti grandi
+- Codice più pulito
+- Best practice Python
+
+**File**: `convert_akomantoso.py` (multiple locations)
+
+---
+
+## 🟢 MEDIUM PRIORITY - v1.6.0
+
+### 7. Type Hints
+
+**Obiettivo**: Aggiungere type hints a tutte le funzioni
+
+```python
+from typing import Dict, List, Optional, Tuple
+import xml.etree.ElementTree as ET
+
+def clean_text_content(element: Optional[ET.Element]) -> str:
+    """Extract text from element with type safety"""
+
+def validate_normattiva_url(url: str) -> bool:
+    """Validate URL with type checking"""
+
+def extract_metadata_from_xml(root: ET.Element) -> Dict[str, str]:
+    """Extract metadata with typed return"""
+```
+
+**Setup mypy**:
+```toml
+# pyproject.toml
+[tool.mypy]
+python_version = "3.7"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+```
+
+**Benefici**:
+- Migliore IDE support (autocomplete)
+- Catch errori a compile-time
+- Documentazione implicita
+
+---
+
+### 8. API Documentation con Sphinx
+
+**Setup**:
+```bash
+pip install sphinx sphinx-rtd-theme
+sphinx-quickstart docs/
+```
+
+**Configurazione**:
+```python
+# docs/conf.py
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.viewcode',
+]
+html_theme = 'sphinx_rtd_theme'
+```
+
+**Benefici**:
+- Documentazione professionale
+- ReadTheDocs integration
+- API reference completo
+
+---
+
+### 9. CI/CD Pipeline Completo
+
+**GitHub Actions workflow**:
+```yaml
+# .github/workflows/ci.yml
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run tests
+        run: |
+          pip install -e .[test]
+          pytest --cov --cov-report=xml
+      - name: Type checking
+        run: mypy .
+      - name: Linting
+        run: ruff check .
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+```
+
+**Benefici**:
+- Test automatici su PR
+- Coverage tracking
+- Quality checks
+
+---
+
+### 10. Version Management
+
+**Single source of truth**:
+```python
+# akoma2md/__version__.py
+__version__ = "1.5.0"
+
+# setup.py
+from akoma2md.__version__ import __version__
+setup(version=__version__)
+
+# pyproject.toml
+version = {attr = "akoma2md.__version__.__version__"}
+```
+
+**Automated changelog**:
+```bash
+# Usa conventional commits
+git commit -m "feat: add retry logic"
+git commit -m "fix: correct footnote numbering"
+
+# Generate changelog
+conventional-changelog -p angular -i CHANGELOG.md -s
+```
+
+---
+
+### 11. Optional Dependencies
+
+**pyproject.toml**:
+```toml
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "mypy>=1.0",
+    "black>=23.0",
+    "ruff>=0.1.0"
+]
+test = [
+    "pytest-mock>=3.10",
+    "responses>=0.23"
+]
+html = [
+    "beautifulsoup4>=4.9.0",
+    "lxml>=4.9.0"
+]
+all = [
+    "akoma2md[dev,test,html]"
+]
+```
+
+**Installazione**:
+```bash
+pip install akoma2md[dev]    # per sviluppo
+pip install akoma2md[html]   # per HTML parsing robusto
+pip install akoma2md[all]    # tutto
+```
+
+---
+
+## 🔵 LOW PRIORITY - Future (v2.0.0)
+
+### 12. Configuration File Support
+
+**Feature**: `.akoma2md.yml` per configurazione
+
+```yaml
+# .akoma2md.yml
+network:
+  timeout: 60
+  max_retries: 5
+
+limits:
+  max_file_size_mb: 100
+
+output:
+  format: markdown
+  include_front_matter: true
+  heading_style: atx  # or setext
+
+processing:
+  validate_before_convert: true
+  clean_whitespace: true
+```
+
+**Caricamento**:
+```python
+import yaml
+
+def load_config():
+    config_paths = [
+        '.akoma2md.yml',
+        '~/.config/akoma2md/config.yml'
+    ]
+    for path in config_paths:
+        if os.path.exists(path):
+            with open(path) as f:
+                return yaml.safe_load(f)
+    return {}
+```
+
+---
+
+### 13. Internazionalizzazione (i18n)
+
+**Error messages in inglese**:
+```python
+MESSAGES = {
+    'it': {
+        'url_invalid': 'URL non valido: {}',
+        'file_not_found': 'File non trovato: {}',
+    },
+    'en': {
+        'url_invalid': 'Invalid URL: {}',
+        'file_not_found': 'File not found: {}',
+    }
+}
+
+def get_message(key, locale='it', **kwargs):
+    return MESSAGES[locale][key].format(**kwargs)
+```
+
+---
+
+### 14. Batch Processing Mode
+
+**CLI**:
+```bash
+# Da file con lista URL
+akoma2md --batch urls.txt --output-dir ./output/
+
+# Da pattern
+akoma2md --batch "https://normattiva.it/leggi/*.xml" -o ./leggi/
+
+# Con parallelizzazione
+akoma2md --batch urls.txt -o ./out/ --parallel 4
+```
+
+**Implementazione**:
+```python
+def batch_convert(url_file, output_dir, parallel=1):
+    with open(url_file) as f:
+        urls = [line.strip() for line in f]
+
+    if parallel > 1:
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=parallel) as executor:
+            executor.map(lambda url: convert_url(url, output_dir), urls)
+    else:
+        for url in urls:
+            convert_url(url, output_dir)
+```
+
+---
+
+### 15. Validation Mode
+
+**CLI**:
+```bash
+# Solo validazione, no conversione
+akoma2md --validate input.xml
+
+# Con report dettagliato
+akoma2md --validate input.xml --verbose
+```
+
+**Output**:
+```
+✅ File XML valido
+✅ Struttura Akoma Ntoso 3.0 corretta
+✅ Metadati completi
+⚠️  Avviso: Footnote senza definizione
+📊 Statistiche:
+   - Articoli: 127
+   - Capitoli: 8
+   - Sezioni: 15
+```
+
+---
+
+### 16. Modularizzazione Codebase
+
+**Nuova struttura**:
+```
+akoma2md/
+├── __init__.py          # Package init
+├── __version__.py       # Version
+├── cli.py              # CLI logic (~150 linee)
+├── converter.py        # Conversione core (~400 linee)
+├── parser.py           # XML parsing (~300 linee)
+├── network.py          # HTTP/URL handling (~150 linee)
+├── metadata.py         # Metadata extraction (~100 linee)
+├── security.py         # Validation/security (~100 linee)
+└── utils.py            # Utilities (~50 linee)
+```
+
+**Benefici**:
+- Codice più organizzato
+- Import selettivi
+- Testing più facile
+- Riuso componenti
+
+---
+
+## 📊 Metriche di Successo
+
+### v1.5.0 Target
+- [ ] Test coverage > 85%
+- [ ] Funzioni max 50 linee
+- [ ] Performance: +20% su documenti >1000 articoli
+- [ ] Zero regressioni
+
+### v1.6.0 Target
+- [ ] Test coverage > 90%
+- [ ] Type hints 100%
+- [ ] Documentazione Sphinx completa
+- [ ] CI/CD con multiple Python versions
+
+### v2.0.0 Target
+- [ ] Architettura modulare completa
+- [ ] Plugin system
+- [ ] Multiple output formats (MD, HTML, PDF)
+- [ ] Batch mode production-ready
+
+---
+
+## 📋 Issue GitHub da Creare
+
+### Enhancement
+1. **[Performance] Precompile regex patterns** - v1.5.0
+2. **[Feature] Robust HTML parsing with BeautifulSoup** - v1.5.0
+3. **[Feature] Network retry logic** - v1.5.0
+4. **[DX] Add type hints throughout codebase** - v1.6.0
+5. **[Feature] Configuration file support** - v2.0.0
+6. **[Feature] Batch processing mode** - v2.0.0
+
+### Bug
+1. **[Bug] Complete footnote implementation with global counter** - v1.5.0
+
+### Refactor
+1. **[Refactor] Split main() into smaller functions** - v1.5.0
+2. **[Refactor] Modularize codebase into package** - v2.0.0
+
+### Documentation
+1. **[Docs] Setup Sphinx documentation** - v1.6.0
+2. **[Docs] API reference with examples** - v1.6.0
+
+### Testing
+1. **[Testing] Add integration tests** - v1.5.0
+2. **[Testing] Add network error scenarios** - v1.5.0
+
+### CI/CD
+1. **[CI] Complete GitHub Actions pipeline** - v1.6.0
+2. **[CI] Automated changelog generation** - v1.6.0
+
+---
+
+## 🎯 Timeline Proposta
+
+**Q1 2025 (Gennaio-Marzo)**:
+- v1.5.0: High priority items
+- Focus: Performance + Robustezza
+
+**Q2 2025 (Aprile-Giugno)**:
+- v1.6.0: Medium priority items
+- Focus: DX + Documentation
+
+**Q3-Q4 2025**:
+- v2.0.0: Low priority + modularizzazione
+- Focus: Architettura + Features avanzate
+
+---
+
+## 📝 Note
+
+- Mantenere backward compatibility fino a v2.0.0
+- Deprecation warnings per funzioni da rimuovere
+- Semantic versioning rigoroso
+- Security patches immediate su tutte le versioni supportate
+
+---
+
+**Ultimo aggiornamento**: 2025-01-11
+**Versione corrente**: v1.4.2
