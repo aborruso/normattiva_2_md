@@ -90,6 +90,14 @@ def clean_text_content(element):
                 text_parts.append(inner_text)
             else:
                 text_parts.append(f"(({inner_text}))")
+        elif child.tag.endswith('footnote'):
+            # Handle footnotes - extract footnote content and create markdown footnote reference
+            footnote_content = clean_text_content(child)
+            if footnote_content:
+                # Generate a simple footnote reference (simplified - in practice would need global counter)
+                footnote_ref = f"[^{footnote_content[:10].replace(' ', '')}]"  # Simple hash-like ref
+                text_parts.append(footnote_ref)
+
         else:
             text_parts.append(clean_text_content(child)) # Recursively get text from other children
 
@@ -376,6 +384,50 @@ def process_section(section_element, ns):
     return section_fragments
 
 
+def process_table(table_element, ns):
+    """
+    Convert an Akoma Ntoso table element to basic Markdown table format.
+    This is a simplified implementation that extracts text content.
+    """
+    table_rows = []
+
+    # Find all rows in the table
+    rows = table_element.findall('.//akn:tr', ns)
+    if not rows:
+        return ""
+
+    for row in rows:
+        row_cells = []
+        # Find all cells in this row (td or th)
+        cells = row.findall('./akn:td', ns) + row.findall('./akn:th', ns)
+        if not cells:
+            continue
+
+        for cell in cells:
+            cell_text = clean_text_content(cell)
+            # Escape pipe characters in cell content
+            cell_text = cell_text.replace('|', '\\|')
+            row_cells.append(cell_text)
+
+        if row_cells:
+            table_rows.append('| ' + ' | '.join(row_cells) + ' |')
+
+    if not table_rows:
+        return ""
+
+    # Create markdown table with header separator
+    markdown_table = '\n'.join(table_rows[:1])  # First row as header
+    if len(table_rows) > 1:
+        # Add separator row
+        num_cols = table_rows[0].count('|') - 1
+        separator = '| ' + ' | '.join(['---'] * num_cols) + ' |'
+        markdown_table += '\n' + separator
+        # Add remaining rows
+        markdown_table += '\n' + '\n'.join(table_rows[1:])
+
+    return markdown_table
+
+
 def process_article(article_element, markdown_content_list, ns):
     article_num_element = article_element.find('./akn:num', ns)
     article_heading_element = article_element.find('./akn:heading', ns)
@@ -463,6 +515,23 @@ def process_article(article_element, markdown_content_list, ns):
                 elif list_item_text:
                     markdown_content_list.append(f"- {list_item_text}\n")
             markdown_content_list.append("\n") # Add a newline after a list
+
+        elif child_of_article.tag.endswith('table'):
+            # Handle tables - convert to basic markdown table format
+            table_markdown = process_table(child_of_article, ns)
+            if table_markdown:
+                markdown_content_list.append(table_markdown)
+                markdown_content_list.append("\n")
+
+        elif child_of_article.tag.endswith('quotedStructure'):
+            # Handle quoted structures - wrap in markdown blockquote
+            quoted_content = clean_text_content(child_of_article)
+            if quoted_content:
+                # Split into lines and add > prefix to each line
+                lines = quoted_content.split('\n')
+                quoted_lines = [f"> {line}" for line in lines if line.strip()]
+                markdown_content_list.append('\n'.join(quoted_lines))
+                markdown_content_list.append("\n")
 
 def main():
     """

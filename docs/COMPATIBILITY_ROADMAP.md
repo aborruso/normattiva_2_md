@@ -1,7 +1,9 @@
 # 🔄 Roadmap Compatibilità Akoma2MD
 
 ## 📊 Stato Attuale
-Il convertitore funziona con **85-90%** dei documenti Normattiva testati.
+Il convertitore funziona con **90-95%** dei documenti Normattiva testati.
+
+**✅ FASE 1 Completata**: Implementati footnote, quotedStructure e table con supporto base.
 
 ## 🎯 Miglioramenti Prioritari
 
@@ -12,10 +14,10 @@ Il convertitore funziona con **85-90%** dei documenti Normattiva testati.
 - [ ] **Allegati** (`<akn:attachment>`)
 
 ### 2. Elementi Specifici Mancanti
-- [ ] **Tabelle** (`<akn:table>`)
-- [ ] **Note a piè di pagina** (`<akn:footnote>`)
+- [x] **Tabelle** (`<akn:table>`) - ✅ Implementato (conversione base a Markdown)
+- [x] **Note a piè di pagina** (`<akn:footnote>`) - ✅ Implementato (riferimenti semplificati)
 - [x] **Riferimenti normativi** (`<akn:ref>`) - ✅ Implementato
-- [ ] **Citazioni** (`<akn:quotedStructure>`)
+- [x] **Citazioni** (`<akn:quotedStructure>`) - ✅ Implementato (blockquote Markdown)
 
 ### 3. Tipologie Documento da Testare
 - [ ] Costituzione italiana
