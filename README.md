@@ -1,9 +1,9 @@
-# 🔄 Akoma2MD - Convertitore Akoma Ntoso to Markdown
+# 🔄 Akoma2MD - Convertitore Akoma Ntoso in Markdown
 
-[![PyPI version](https://img.shields.io/pypi/v/akoma2md.svg)](https://pypi.org/project/akoma2md/)
-[![Python Version](https://img.shields.io/badge/python-3.7+-blue.svg)](https://python.org)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Downloads](https://img.shields.io/pypi/dm/akoma2md.svg)](https://pypi.org/project/akoma2md/)
+[![Versione PyPI](https://img.shields.io/pypi/v/akoma2md.svg)](https://pypi.org/project/akoma2md/)
+[![Versione Python](https://img.shields.io/badge/python-3.7+-blue.svg)](https://python.org)
+[![Licenza](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Download](https://img.shields.io/pypi/dm/akoma2md.svg)](https://pypi.org/project/akoma2md/)
 
 **Akoma2MD** è uno strumento da riga di comando progettato per convertire documenti XML in formato **Akoma Ntoso** (in particolare le norme pubblicate su `normattiva.it`) in documenti **Markdown** leggibili e ben formattati.
 
@@ -11,11 +11,11 @@
 
 Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi significativi:
 
-- **📝 LLM-friendly**: Il formato Markdown è ideale per Large Language Models (Claude, ChatGPT, ecc.), permettendo di passare intere normative come contesto per analisi, interpretazione e risposta a domande legali
-- **🤖 AI Applications**: Facilita la creazione di chatbot legali, assistenti normativi e sistemi di Q&A automatizzati
-- **👁️ Leggibilità**: Il testo è immediatamente leggibile sia da umani che da macchine, senza tag XML complessi
-- **🔍 Ricerca e analisi**: Formato ottimale per indicizzazione, ricerca semantica e processamento del linguaggio naturale
-- **📊 Documentazione**: Facile integrazione in wiki, knowledge base e sistemi di documentazione
+- **📝 Ottimizzato per LLM**: Il formato Markdown è ideale per modelli linguistici di grandi dimensioni (Claude, ChatGPT, ecc.), permettendo di fornire intere normative come contesto per analisi, interpretazione e risposta a domande legali
+- **🤖 Applicazioni AI**: Facilita la creazione di chatbot legali, assistenti normativi e sistemi di Q&A automatizzati
+- **👁️ Leggibilità**: Il testo è immediatamente comprensibile sia da persone che da sistemi automatici, senza tag XML complessi
+- **🔍 Ricerca e analisi**: È un formato ottimale per indicizzazione, ricerca semantica e processamento del linguaggio naturale
+- **📊 Documentazione**: Si integra con facilità in wiki, basi di conoscenza e piattaforme di documentazione
 
 ## 🚀 Caratteristiche
 
@@ -97,9 +97,9 @@ python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:d
 akoma2md decreto_82_2005.xml codice_amministrazione_digitale.md
 
 # Con percorsi assoluti
-akoma2md /path/to/document.xml /path/to/output.md
+akoma2md /percorso/documento.xml /percorso/output.md
 
-# Visualizzare l'help
+# Visualizzare l'aiuto
 akoma2md --help
 python fetch_from_url.py --help
 ```
@@ -107,15 +107,15 @@ python fetch_from_url.py --help
 ### Opzioni disponibili
 
 ```
-usage: akoma2md [-h] [-i INPUT] [-o OUTPUT] [input_file] [output_file]
+utilizzo: akoma2md [-h] [-i INPUT] [-o OUTPUT] [file_input] [file_output]
 
 Converte un file XML Akoma Ntoso in formato Markdown
 
-positional arguments:
-  input_file            File XML di input in formato Akoma Ntoso
-  output_file           File Markdown di output
+argomenti posizionali:
+  file_input            File XML di input in formato Akoma Ntoso
+  file_output           File Markdown di output
 
-options:
+opzioni:
   -h, --help            Mostra questo messaggio di aiuto
   -i INPUT, --input INPUT
                         File XML di input in formato Akoma Ntoso
@@ -178,7 +178,7 @@ Il Markdown generato include:
 - Python 3.7+
 - Nessuna dipendenza esterna
 
-### Setup ambiente di sviluppo
+### Configurazione dell'ambiente di sviluppo
 
 ```bash
 git clone https://github.com/aborruso/normattiva_2_md.git
@@ -188,9 +188,9 @@ source venv/bin/activate  # Su Windows: venv\Scripts\activate
 pip install -e .
 ```
 
-### Build eseguibile standalone (opzionale)
+### Creazione di un eseguibile autonomo (opzionale)
 
-Per creare un eseguibile standalone per uso locale:
+Per creare un eseguibile autonomo per uso locale:
 
 ```bash
 pip install pyinstaller
@@ -210,31 +210,31 @@ python convert_akomantoso.py sample.xml output.md
 
 ## 📝 Licenza
 
-Questo progetto è rilasciato sotto licenza [MIT](LICENSE).
+Questo progetto è distribuito con licenza [MIT](LICENSE).
 
 ## 🤝 Contributi
 
-I contributi sono benvenuti! Per favore:
+I contributi sono benvenuti! Segui questi passaggi:
 
-1. Fai un fork del progetto
-2. Crea un branch per la tua feature (`git checkout -b feature/AmazingFeature`)
-3. Committa le tue modifiche (`git commit -m 'Add some AmazingFeature'`)
-4. Push al branch (`git push origin feature/AmazingFeature`)
-5. Apri una Pull Request
+1. Esegui un fork del progetto
+2. Crea un ramo per la nuova funzionalità (`git checkout -b funzione/descrizione`)
+3. Registra le modifiche (`git commit -m 'Descrizione sintetica della modifica'`)
+4. Pubblica il ramo (`git push origin funzione/descrizione`)
+5. Invia una richiesta di integrazione
 
 ## 📞 Supporto
 
-- 🐛 **Bug Reports**: [Issues](https://github.com/aborruso/normattiva_2_md/issues)
-- 💡 **Feature Requests**: [Issues](https://github.com/aborruso/normattiva_2_md/issues)
-- 📖 **Documentazione**: [Wiki](https://github.com/aborruso/normattiva_2_md/wiki)
+- 🐛 **Segnalazioni di bug**: [pagina delle segnalazioni](https://github.com/aborruso/normattiva_2_md/issues)
+- 💡 **Proposte di nuove funzionalità**: [pagina delle segnalazioni](https://github.com/aborruso/normattiva_2_md/issues)
+- 📖 **Documentazione estesa**: [Wiki](https://github.com/aborruso/normattiva_2_md/wiki)
 
 ## 🏗️ Stato del progetto
 
-- ✅ **Core features**: Implementate
-- ✅ **CLI interface**: Completa
-- ✅ **Error handling**: Robusta
-- 🔄 **Testing**: In corso
-- 📚 **Documentation**: Completa
+- ✅ **Funzionalità principali**: implementate
+- ✅ **Interfaccia a riga di comando**: completa
+- ✅ **Gestione errori**: robusta
+- 🔄 **Verifiche automatiche**: in evoluzione
+- 📚 **Documentazione**: aggiornata
 
 ---
 
