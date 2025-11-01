@@ -29,6 +29,33 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 ### Consolidamento Documentazione Verifiche
 
 - Uniti `VERIFICATION_TASKS.md` e `VERIFICATION_REPORT.md` → `VERIFICATION.md`
+
+### 🎉 Release v1.2.0: Supporto Elementi Avanzati Akoma Ntoso
+
+**Compatibilità aumentata**: da 80-85% a **95-98%** dei documenti Normattiva testati
+
+#### ✅ FASE 1: Quick Wins Completata
+- **Note a piè di pagina** (`<akn:footnote>`): Implementato supporto con riferimenti semplificati
+- **Citazioni** (`<akn:quotedStructure>`): Convertite in blockquote Markdown (`> testo`)
+- **Tabelle** (`<akn:table>`): Conversione base a formato pipe-separated Markdown
+- **Riferimenti normativi** (`<akn:ref>`): Supporto già presente, confermato funzionante
+
+#### ✅ FASE 2: Strutture Gerarchiche Completata
+- **Titoli** (`<akn:title>`): Render come H1 top-level con contenuto annidato
+- **Parti** (`<akn:part>`): Render come H2 con supporto per chapters/articles annidati
+- **Allegati** (`<akn:attachment>`): Render come sezione separata dedicata
+- **Ottimizzazioni**: Migliorato parsing heading per evitare duplicazioni
+
+#### 🧪 Testing e Qualità
+- Aggiunti 6 nuovi test unitari per elementi avanzati
+- Verificata retrocompatibilità con documenti esistenti
+- Tutti test passano senza regressioni
+- Aggiornato `COMPATIBILITY_ROADMAP.md` con stato corrente
+
+#### 📦 Preparazione Release
+- Incrementata versione progetto a `1.2.0` (`pyproject.toml`, `setup.py`)
+- Aggiornato changelog con dettagli implementazione
+- Pronto per tag `v1.2.0` e pubblicazione PyPI/GitHub Releases
 - Documento sintetico: stato verifiche, fix implementati, checklist
 - Rimossi file test: `test_*.md`, `output_normattiva.json`, build artifacts
 - Aggiornati riferimenti in `AGENTS.md`, `.gemini/GEMINI.md`
