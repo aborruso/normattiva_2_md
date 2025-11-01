@@ -4,6 +4,77 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-01
 
+### 📝 Release v1.4.1: Aggiornamento Documentazione
+
+**Patch**: README aggiornato con esempio output gerarchia corretta
+
+#### ✅ Modifiche
+- Aggiornato esempio output README con gerarchia v1.4.0
+- Descrizione dettagliata livelli heading (H1→H2→H3→H4)
+- Enfasi su "machine-to-machine ready"
+
+### 🎉 Release v1.4.0: Gerarchia Heading Strutturata Machine-to-Machine
+
+**Breaking Change**: Implementato parser intelligente per gerarchia logica libro-style
+
+#### ✅ Parsing Intelligente XML
+- Analizzato XML: Capo e Sezione sono entrambi `<chapter>`, gerarchia nel testo `<heading>`
+- Parser testuale estrae struttura: "Capo X TITOLO Sezione Y TITOLO_SEZ"
+- Ricostruita gerarchia logica da heading flat XML
+
+#### ✅ Gerarchia Corretta Book-Style
+- **H1**: Titolo documento legge
+- **H2**: Capo (capitolo principale)
+- **H3**: Sezione (sotto-capitolo)
+- **H4**: Articoli (contenuto)
+- Rimosso downgrade globale, livelli assegnati durante parsing
+
+#### ✅ Esempi Output
+```markdown
+# Codice dell'amministrazione digitale.
+## Capo I - PRINCIPI GENERALI
+### Sezione I - Definizioni, finalita'...
+#### Art. 1. - Definizioni
+```
+
+#### 🔧 Modifiche Tecniche
+- `parse_chapter_heading()`: ritorna `{'type', 'capo', 'sezione'}`
+- `process_chapter()`: assegna livelli H2/H3/H4 in base a tipo
+- Test aggiornati per nuova gerarchia
+
+### 🎉 Release v1.3.5: Correzione Indentazione Downgrade Heading
+
+**Bugfix**: Risolto errore indentazione nella funzione `downgrade_headings()`
+
+#### ✅ Fix Tecnici
+- Corretta indentazione blocco if/else in `downgrade_headings()`
+- Ripristinato comportamento corretto downgrade heading
+- Tutti i test passati dopo fix
+
+#### 📦 Build e Distribuzione
+- Creato eseguibile standalone v1.3.5
+- Generati pacchetti PyPI (wheel e tar.gz)
+
+### 🎉 Release v1.3.4: Ristrutturazione Gerarchia Markdown
+
+**Rifacimento struttura**: Downgrade globale di tutti gli heading per gerarchia logica
+
+#### ✅ Struttura Markdown Ottimizzata
+- **Front matter + H1**: Documento inizia con front matter e H1 per titolo legge
+- **Downgrade globale**: Tutti gli heading abbassati di 1 livello (H3→H2, H4→H3, etc.)
+- **Gerarchia logica**: H1 (titolo) > H2 (capi) > H3 (sezioni) > H2/H3 (articoli)
+- **Mantenimento struttura XML**: La gerarchia originale è preservata, solo livelli Markdown aggiustati
+
+#### ✅ Miglioramenti Qualità
+- **Consistenza sezioni**: Capitoli con "Sezione" ora uniformemente a H3 dopo downgrade
+- **Leggibilità LLM**: Struttura più naturale per modelli di linguaggio
+- **Standard Markdown**: Nessun salto di livelli (H1 poi H3)
+
+#### 🧪 Testing e Qualità
+- Aggiornati test per riflettere nuova gerarchia
+- Tutti i test passati
+- Nessuna regressione nelle funzionalità
+
 ### 🎉 Release v1.3.2: Correzione Gerarchia Heading
 
 **Fix gerarchico**: Articoli ora rispettano la struttura documentale corretta

@@ -65,6 +65,41 @@ def extract_metadata_from_xml(root):
 
     return metadata
 
+def downgrade_headings(text):
+    """
+    Downgrade all Markdown headings by one level.
+    ## becomes #, ### becomes ##, etc.
+    """
+    lines = text.split('\n')
+    downgraded_lines = []
+
+    for line in lines:
+        stripped = line.lstrip()
+        if stripped.startswith('#'):
+            # Find the number of # at the beginning
+            hash_count = 0
+            for char in stripped:
+                if char == '#':
+                    hash_count += 1
+                else:
+                    break
+            # Check if this is a heading (hashes followed by space)
+            if hash_count < len(stripped) and stripped[hash_count] == ' ':
+                if hash_count > 1:
+                    # Remove one # and keep the rest
+                    new_line = '#' * (hash_count - 1) + stripped[hash_count:]
+                    downgraded_lines.append(new_line)
+                else:
+                    # Already #, keep as is
+                    downgraded_lines.append(line)
+            else:
+                # Not a heading (maybe # in text)
+                downgraded_lines.append(line)
+        else:
+            downgraded_lines.append(line)
+
+    return '\n'.join(downgraded_lines)
+
 def generate_front_matter(metadata):
     """
     Generate YAML front matter from metadata dictionary.
@@ -98,23 +133,40 @@ def parse_chapter_heading(heading_text):
     Separa heading che contengono sia Capo che Sezione.
     Pattern: "Capo [N] [TITOLO] Sezione [N] [Titolo]"
     Gestisce anche il caso in cui Sezione sia dentro modifiche legislative (( ))
-    Returns: {'capo': ..., 'sezione': ...} or {'capo': ..., 'sezione': None}
+    Returns: {'type': 'capo'|'sezione'|'both', 'capo': ..., 'sezione': ...}
     """
-    # Cerca "Sezione" nell'heading, anche se dentro (( ))
-    sezione_match = re.search(r'\(?\(?\s*(Sezione\s+[IVX]+)', heading_text, re.IGNORECASE)
-
-    if sezione_match and heading_text.startswith('Capo'):
-        # Split in base alla posizione di "Sezione"
-        split_pos = sezione_match.start()
+    # Cerca pattern "Capo" e "Sezione"
+    has_capo = re.search(r'\bCapo\s+[IVX]+', heading_text, re.IGNORECASE)
+    has_sezione = re.search(r'\bSezione\s+[IVX]+', heading_text, re.IGNORECASE)
+    
+    result = {'type': None, 'capo': None, 'sezione': None}
+    
+    # Caso 1: Contiene sia Capo che Sezione
+    if has_capo and has_sezione:
+        result['type'] = 'both'
+        split_pos = has_sezione.start()
         capo_text = heading_text[:split_pos].strip()
         sezione_text = heading_text[split_pos:].strip()
-
-        capo = format_heading_with_separator(capo_text)
-        sezione = format_heading_with_separator(sezione_text)
-        return {'capo': capo, 'sezione': sezione}
-
-    # Se non c'è match, formatta comunque l'heading
-    return {'capo': format_heading_with_separator(heading_text), 'sezione': None}
+        
+        result['capo'] = format_heading_with_separator(capo_text)
+        result['sezione'] = format_heading_with_separator(sezione_text)
+    
+    # Caso 2: Solo Capo
+    elif has_capo:
+        result['type'] = 'capo'
+        result['capo'] = format_heading_with_separator(heading_text)
+    
+    # Caso 3: Solo Sezione
+    elif has_sezione:
+        result['type'] = 'sezione'
+        result['sezione'] = format_heading_with_separator(heading_text)
+    
+    # Caso 4: Nessuno dei due (fallback)
+    else:
+        result['type'] = 'unknown'
+        result['capo'] = format_heading_with_separator(heading_text)
+    
+    return result
 
 def format_heading_with_separator(heading_text):
     """
@@ -374,15 +426,32 @@ def generate_markdown_fragments(root, ns, metadata=None):
 
     fragments = []
 
+    # Extract document title for later use
+    doc_title_fragments = extract_document_title(root, ns)
+
+    # Generate body content
+    preamble_fragments = extract_preamble_fragments(root, ns)
+    body_elements_fragments = extract_body_fragments(root, ns)
+
+    body_fragments = []
+    body_fragments.extend(preamble_fragments)
+    body_fragments.extend(body_elements_fragments)
+
+    # Join body content (NO downgrade - proper hierarchy from parsing)
+    body_text = ''.join(body_fragments)
+
     # Add front matter if metadata is available
     if metadata:
         front_matter = generate_front_matter(metadata)
         if front_matter:
             fragments.append(front_matter)
 
-    fragments.extend(extract_document_title(root, ns))
-    fragments.extend(extract_preamble_fragments(root, ns))
-    fragments.extend(extract_body_fragments(root, ns))
+    # Add document title as H1
+    fragments.extend(doc_title_fragments)
+
+    # Add downgraded body content
+    fragments.append(body_text)
+
     return fragments
 
 
@@ -454,22 +523,54 @@ def process_body_element(element, ns):
 
 
 def process_chapter(chapter_element, ns):
-    """Convert a chapter element (and its nested children) to Markdown fragments."""
-
+    """
+    Convert a chapter element to Markdown fragments with proper hierarchy.
+    
+    Handles XML structure where both Capo and Sezione are marked as <chapter>,
+    with hierarchy information encoded in the heading text.
+    
+    Hierarchy:
+    - Capo only: H2
+    - Capo + Sezione: H2 (Capo), H3 (Sezione), H4 (Articles)
+    - Sezione only: H3, H4 (Articles)
+    """
     chapter_fragments = []
+    article_level = 3  # Default level
     heading_element = chapter_element.find('./akn:heading', ns)
+    
     if heading_element is not None and heading_element.text:
         clean_heading = clean_text_content(heading_element)
         parsed = parse_chapter_heading(clean_heading)
-        chapter_fragments.append(f"### {parsed['capo']}\n\n")
-        if parsed['sezione']:
-            chapter_fragments.append(f"#### {parsed['sezione']}\n\n")
+        
+        # Determine heading levels based on parsed structure
+        if parsed['type'] == 'both':
+            # Capo + Sezione: Capo is H2, Sezione is H3
+            chapter_fragments.append(f"## {parsed['capo']}\n\n")
+            chapter_fragments.append(f"### {parsed['sezione']}\n\n")
+            article_level = 4  # Articles under sezione are H4
+        
+        elif parsed['type'] == 'capo':
+            # Only Capo: H2
+            chapter_fragments.append(f"## {parsed['capo']}\n\n")
+            article_level = 3  # Articles directly under capo are H3
+        
+        elif parsed['type'] == 'sezione':
+            # Only Sezione: H3 (assumes it's under a previous Capo)
+            chapter_fragments.append(f"### {parsed['sezione']}\n\n")
+            article_level = 4  # Articles under sezione are H4
+        
+        else:
+            # Unknown/fallback
+            chapter_fragments.append(f"## {parsed['capo']}\n\n")
+            article_level = 3
 
+    # Process child elements
     for child in chapter_element:
         if child.tag.endswith('section'):
             chapter_fragments.extend(process_section(child, ns))
         elif child.tag.endswith('article'):
-            process_article(child, chapter_fragments, ns, level=3)
+            process_article(child, chapter_fragments, ns, level=article_level)
+    
     return chapter_fragments
 
 
@@ -547,7 +648,7 @@ def process_attachment(attachment_element, ns):
         if child.tag.endswith('chapter'):
             attachment_fragments.extend(process_chapter(child, ns))
         elif child.tag.endswith('article'):
-            process_article(child, attachment_fragments, ns, level=4)
+            process_article(child, attachment_fragments, ns, level=3)
 
     return attachment_fragments
 

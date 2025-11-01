@@ -23,14 +23,14 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
 
     def test_first_article_heading_is_present(self):
         self.assertIn(
-            "### Art. 1. - Definizioni",
+            "## Art. 1. - Definizioni",
             self.markdown_output,
             "Il primo articolo dovrebbe contenere l'intestazione attesa",
         )
 
     def test_capitolo_heading_format(self):
         self.assertIn(
-            "### Capo I - PRINCIPI GENERALI",
+            "## Capo I - PRINCIPI GENERALI",
             self.markdown_output,
             "La formattazione del capitolo dovrebbe includere numero romano e titolo",
         )
@@ -81,7 +81,7 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
         self.assertIn('Data 1', result)
 
     def test_title_element_handling(self):
-        """Test that title elements are converted to H1 headings"""
+        """Test that title elements are converted to H2 headings"""
         # Create a simple XML title
         title_xml = '''<akn:title xmlns:akn="http://docs.oasis-open.org/legaldocml/ns/akn/3.0">
             <akn:heading>TITOLO I</akn:heading>
@@ -93,10 +93,10 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
         ns = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
         result_fragments = process_title(root, ns)
         result = ''.join(result_fragments)
-        # Should contain H2 heading
+        # Title should be H2
         self.assertIn('## TITOLO I', result)
-        # Should contain nested chapter
-        self.assertIn('### Capo I - DISPOSIZIONI GENERALI', result)
+        # Nested chapter (Capo) should be H2
+        self.assertIn('## Capo I - DISPOSIZIONI GENERALI', result)
 
     def test_part_element_handling(self):
         """Test that part elements are converted to H2 headings"""
@@ -108,8 +108,8 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
         ns = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
         result_fragments = process_part(root, ns)
         result = ''.join(result_fragments)
-        # Should contain H3 heading
-        self.assertIn('### Parte I - DISPOSIZIONI GENERALI', result)
+        # Should contain H1 heading (before global downgrade)
+        self.assertIn('# Parte I - DISPOSIZIONI GENERALI', result)
 
     def test_attachment_element_handling(self):
         """Test that attachment elements are converted to separate sections"""
@@ -125,10 +125,10 @@ class ConvertAkomaNtosoTest(unittest.TestCase):
         ns = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
         result_fragments = process_attachment(root, ns)
         result = ''.join(result_fragments)
-        # Should contain attachment section (H3)
-        self.assertIn('### Allegato: Allegato A', result)
+        # Should contain attachment section (H1 before global downgrade)
+        self.assertIn('# Allegato: Allegato A', result)
         # Should contain nested article
-        self.assertIn('#### Art. 1 - Test Article', result)
+        self.assertIn('## Art. 1 - Test Article', result)
 
     def test_generate_front_matter_complete(self):
         """Test front matter generation with complete metadata"""

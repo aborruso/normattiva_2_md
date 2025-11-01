@@ -22,9 +22,9 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 - ✅ **Conversione completa** da XML Akoma Ntoso a Markdown
 - ✅ **Gestione degli articoli** con numerazione corretta
 - ✅ **Supporto per le modifiche legislative** con evidenziazione `((modifiche))`
-- ✅ **Preservazione della struttura gerarchica** (capitoli, sezioni, articoli)
+- ✅ **Gerarchia book-style intelligente** con parsing strutturato (H1→H2→H3→H4)
 - ✅ **Front matter YAML** con metadati completi (URL, dataGU, codiceRedaz, dataVigenza)
-- ✅ **Struttura ottimizzata per LLM** con gerarchia heading bilanciata
+- ✅ **Machine-to-machine ready** per LLM, RAG e parsing automatico
 - ✅ **CLI flessibile** con argomenti posizionali e nominati
 - ✅ **Gestione errori robusta** con messaggi informativi
 - ✅ **Nessuna dipendenza esterna** (solo librerie standard Python)
@@ -150,28 +150,34 @@ Lo strumento supporta documenti XML in formato **Akoma Ntoso 3.0**, inclusi:
 Il Markdown generato include:
 
 - **Front matter YAML** con metadati completi (URL, dataGU, codiceRedaz, dataVigenza)
-- **Intestazioni gerarchiche ottimizzate** (`#` per titolo, `##` per articoli, `###` per capitoli)
+- **Gerarchia heading book-style** ottimizzata per lettura e parsing LLM:
+  - `#` (H1) per titolo documento
+  - `##` (H2) per Capi (capitoli principali)
+  - `###` (H3) per Sezioni
+  - `####` (H4) per Articoli
 - **Liste puntate** per le definizioni
 - **Numerazione corretta** dei commi e articoli
 - **Evidenziazione delle modifiche** con `((testo modificato))`
-- **Struttura ottimizzata per LLM** e lettura umana
+- **Struttura machine-to-machine** ready per LLM e parser automatici
 
 ### Esempio di output
 
 ```markdown
 ---
-url: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2005-03-07;005G0104
-url_xml: https://www.normattiva.it/do/atto/caricaAKN?dataGU=20050307&codiceRedaz=005G0104&dataVigenza=20250130
+url: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82
+url_xml: https://www.normattiva.it/do/atto/caricaAKN?dataGU=20050307&codiceRedaz=005G0104&dataVigenza=20251101
 dataGU: 20050307
 codiceRedaz: 005G0104
-dataVigenza: 20250130
+dataVigenza: 20251101
 ---
 
 # Codice dell'amministrazione digitale.
 
-### Capo I - PRINCIPI GENERALI
+## Capo I - PRINCIPI GENERALI
 
-## Art. 1 - Definizioni
+### Sezione I - Definizioni, finalita' e ambito di applicazione
+
+#### Art. 1. - Definizioni
 
 1. Ai fini del presente codice si intende per:
 
@@ -179,9 +185,15 @@ dataVigenza: 20250130
 - b) firma digitale: un particolare tipo di firma...
 - c) ((identità digitale)): la rappresentazione informatica...
 
-## Art. 2 - Finalità e ambito di applicazione
+#### Art. 2. - Finalita' e ambito di applicazione
 
 1. Lo Stato, le Regioni e le autonomie locali...
+
+### Sezione II - ((Carta della cittadinanza digitale))
+
+#### Art. 3. - Diritto all'uso delle tecnologie
+
+1. I cittadini e le imprese hanno il diritto...
 ```
 
 ## 🔧 Sviluppo
