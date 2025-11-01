@@ -108,7 +108,10 @@ jobs:
         env:
           AKOMA_VERSION: ${{ env.AKOMA_VERSION }}
         run: |
-          Compress-Archive -Path dist/akoma2md.exe -DestinationPath "dist/akoma2md-$AKOMA_VERSION-windows-x86_64.zip" -Force
+          $artifactPath = Join-Path "dist" "akoma2md-$env:AKOMA_VERSION-windows-x86_64.zip"
+          $binaryPath = Join-Path "dist" "akoma2md.exe"
+          Compress-Archive -Path $binaryPath -DestinationPath $artifactPath -Force
+          Get-Item $artifactPath
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -140,3 +143,4 @@ jobs:
           files: |
             dist/akoma2md-linux/*
             dist/akoma2md-windows/*
+          prerelease: ${{ contains(github.ref, '-rc') }}
