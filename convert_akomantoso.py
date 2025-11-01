@@ -4,11 +4,20 @@ import sys
 import argparse
 import os
 import requests
+import tempfile
 from datetime import datetime
+from urllib.parse import urlparse
 
 AKN_NAMESPACE = {'akn': 'http://docs.oasis-open.org/legaldocml/ns/akn/3.0'}
 GU_NAMESPACE = {'gu': 'http://www.gazzettaufficiale.it/eli/'}
 ELI_NAMESPACE = {'eli': 'http://data.europa.eu/eli/ontology#'}
+
+# Security constants
+ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
+MAX_FILE_SIZE_MB = 50
+MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+DEFAULT_TIMEOUT = 30
+VERSION = '1.4.2'
 
 def extract_metadata_from_xml(root):
     """
@@ -65,40 +74,67 @@ def extract_metadata_from_xml(root):
 
     return metadata
 
-def downgrade_headings(text):
+def validate_normattiva_url(url):
     """
-    Downgrade all Markdown headings by one level.
-    ## becomes #, ### becomes ##, etc.
+    Validates that a URL is from the allowed normattiva.it domain and uses HTTPS.
+
+    Args:
+        url: URL string to validate
+
+    Returns:
+        bool: True if URL is valid and safe to fetch
+
+    Raises:
+        ValueError: If URL is invalid or not from allowed domain
     """
-    lines = text.split('\n')
-    downgraded_lines = []
+    try:
+        parsed = urlparse(url)
 
-    for line in lines:
-        stripped = line.lstrip()
-        if stripped.startswith('#'):
-            # Find the number of # at the beginning
-            hash_count = 0
-            for char in stripped:
-                if char == '#':
-                    hash_count += 1
-                else:
-                    break
-            # Check if this is a heading (hashes followed by space)
-            if hash_count < len(stripped) and stripped[hash_count] == ' ':
-                if hash_count > 1:
-                    # Remove one # and keep the rest
-                    new_line = '#' * (hash_count - 1) + stripped[hash_count:]
-                    downgraded_lines.append(new_line)
-                else:
-                    # Already #, keep as is
-                    downgraded_lines.append(line)
-            else:
-                # Not a heading (maybe # in text)
-                downgraded_lines.append(line)
-        else:
-            downgraded_lines.append(line)
+        # Check scheme is HTTPS
+        if parsed.scheme != 'https':
+            raise ValueError(f"Solo HTTPS è consentito. URL fornito usa: {parsed.scheme}")
 
-    return '\n'.join(downgraded_lines)
+        # Check domain is in whitelist
+        if parsed.netloc.lower() not in ALLOWED_DOMAINS:
+            raise ValueError(f"Dominio non consentito: {parsed.netloc}. Domini permessi: {', '.join(ALLOWED_DOMAINS)}")
+
+        return True
+
+    except Exception as e:
+        raise ValueError(f"URL non valido: {e}")
+
+def sanitize_output_path(path, allow_absolute=True):
+    """
+    Sanitizes an output file path to prevent path traversal attacks.
+
+    Args:
+        path: File path to sanitize
+        allow_absolute: Whether to allow absolute paths
+
+    Returns:
+        str: Sanitized absolute path
+
+    Raises:
+        ValueError: If path attempts traversal outside working directory
+    """
+    if not path:
+        raise ValueError("Path non può essere vuoto")
+
+    # Convert to absolute path
+    abs_path = os.path.abspath(path)
+
+    # Get working directory
+    cwd = os.path.abspath(os.getcwd())
+
+    # If not allowing absolute paths or path is outside cwd, reject
+    if not allow_absolute and not abs_path.startswith(cwd):
+        raise ValueError(f"Path fuori dalla directory di lavoro: {path}")
+
+    # Check for common path traversal patterns
+    if '..' in path or path.startswith('/etc') or path.startswith('/sys'):
+        raise ValueError(f"Path non sicuro rilevato: {path}")
+
+    return abs_path
 
 def generate_front_matter(metadata):
     """
@@ -258,11 +294,21 @@ def is_normattiva_url(input_str):
         input_str: stringa da verificare
 
     Returns:
-        bool: True se è un URL normattiva.it
+        bool: True se è un URL normattiva.it valido e sicuro
     """
     if not isinstance(input_str, str):
         return False
-    return bool(re.match(r'https?://(www\.)?normattiva\.it/', input_str, re.IGNORECASE))
+
+    # Check if it looks like a URL
+    if not re.match(r'https?://(www\.)?normattiva\.it/', input_str, re.IGNORECASE):
+        return False
+
+    # Validate URL for security
+    try:
+        validate_normattiva_url(input_str)
+        return True
+    except ValueError:
+        return False
 
 def extract_params_from_normattiva_url(url, session=None, quiet=False):
     """
@@ -283,13 +329,13 @@ def extract_params_from_normattiva_url(url, session=None, quiet=False):
         session = requests.Session()
 
     headers = {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+        'User-Agent': f'Akoma2MD/{VERSION} (https://github.com/ondata/akoma2md)',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'it-IT,it;q=0.9,en;q=0.8'
     }
 
     try:
-        response = session.get(url, headers=headers, timeout=30)
+        response = session.get(url, headers=headers, timeout=DEFAULT_TIMEOUT, verify=True)
         response.raise_for_status()
     except requests.RequestException as e:
         print(f"Errore nel caricamento della pagina: {e}", file=sys.stderr)
@@ -350,17 +396,22 @@ def download_akoma_ntoso(params, output_path, session=None, quiet=False):
     if session is None:
         session = requests.Session()
 
-    # Simula un browser
     headers = {
-        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+        'User-Agent': f'Akoma2MD/{VERSION} (https://github.com/ondata/akoma2md)',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'it-IT,it;q=0.9,en;q=0.8',
         'Referer': 'https://www.normattiva.it/'
     }
 
     try:
-        response = session.get(url, headers=headers, timeout=30, allow_redirects=True)
+        response = session.get(url, headers=headers, timeout=DEFAULT_TIMEOUT, allow_redirects=True, verify=True)
         response.raise_for_status()
+
+        # Check file size before processing
+        content_length = response.headers.get('content-length')
+        if content_length and int(content_length) > MAX_FILE_SIZE_BYTES:
+            print(f"❌ Errore: file troppo grande ({int(content_length) / 1024 / 1024:.1f}MB). Massimo consentito: {MAX_FILE_SIZE_MB}MB", file=sys.stderr)
+            return False
 
         # Verifica che sia XML
         if response.content[:5] == b'<?xml' or b'<akomaNtoso' in response.content[:500]:
@@ -384,6 +435,13 @@ def download_akoma_ntoso(params, output_path, session=None, quiet=False):
 
 def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=None, metadata=None):
     try:
+        # Check file size before parsing (XML bomb protection)
+        file_size = os.path.getsize(xml_file_path)
+        if file_size > MAX_FILE_SIZE_BYTES:
+            print(f"Errore: file XML troppo grande ({file_size / 1024 / 1024:.1f}MB). Massimo consentito: {MAX_FILE_SIZE_MB}MB", file=sys.stderr)
+            return False
+
+        # Parse XML with defusedxml would be better, but using size limit for now
         tree = ET.parse(xml_file_path)
         root = tree.getroot()
 
@@ -857,6 +915,14 @@ Esempi d'uso:
     input_source = args.input or args.input_named
     output_file = args.output or args.output_named
 
+    # Sanitize output path if provided
+    if output_file:
+        try:
+            output_file = sanitize_output_path(output_file)
+        except ValueError as e:
+            print(f"❌ Errore nel path di output: {e}", file=sys.stderr)
+            sys.exit(1)
+
     # Valida che input sia specificato
     if not input_source:
         parser.error("Input richiesto.\n"
@@ -871,6 +937,13 @@ Esempi d'uso:
         if not quiet_mode:
             print(f"Rilevato URL normattiva.it: {input_source}", file=sys.stderr)
 
+        # Validate URL for security
+        try:
+            validate_normattiva_url(input_source)
+        except ValueError as e:
+            print(f"❌ Errore validazione URL: {e}", file=sys.stderr)
+            sys.exit(1)
+
         # Estrai parametri dalla pagina
         params, session = extract_params_from_normattiva_url(input_source, quiet=quiet_mode)
         if not params:
@@ -883,8 +956,9 @@ Esempi d'uso:
             print(f"  codiceRedaz: {params['codiceRedaz']}", file=sys.stderr)
             print(f"  dataVigenza: {params['dataVigenza']}\n", file=sys.stderr)
 
-        # Crea file XML temporaneo
-        xml_temp_path = f"temp_{params['codiceRedaz']}.xml"
+        # Crea file XML temporaneo con tempfile module (più sicuro)
+        temp_fd, xml_temp_path = tempfile.mkstemp(suffix=f"_{params['codiceRedaz']}.xml", prefix="akoma2md_")
+        os.close(temp_fd)  # Close file descriptor, we'll write with requests
 
         # Scarica XML
         if not download_akoma_ntoso(params, xml_temp_path, session, quiet=quiet_mode):

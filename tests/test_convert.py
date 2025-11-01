@@ -1,8 +1,23 @@
 import unittest
 import xml.etree.ElementTree as ET
 from pathlib import Path
+import tempfile
+import os
 
-from convert_akomantoso import generate_markdown_text, clean_text_content, process_table, process_title, process_part, process_attachment, generate_front_matter, extract_metadata_from_xml
+from convert_akomantoso import (
+    generate_markdown_text,
+    clean_text_content,
+    process_table,
+    process_title,
+    process_part,
+    process_attachment,
+    generate_front_matter,
+    extract_metadata_from_xml,
+    validate_normattiva_url,
+    sanitize_output_path,
+    is_normattiva_url,
+    MAX_FILE_SIZE_BYTES
+)
 
 
 FIXTURE_PATH = Path(__file__).resolve().parents[1] / "test_data" / "20050516_005G0104_VIGENZA_20250130.xml"
@@ -201,6 +216,92 @@ dataGU: 20231201
         self.assertTrue(markdown_with_frontmatter.startswith('---'))
         self.assertIn('url:', markdown_with_frontmatter)
         self.assertIn('codiceRedaz: 005G0104', markdown_with_frontmatter)
+
+
+class SecurityTests(unittest.TestCase):
+    """Test security features: URL validation, path sanitization, file size limits"""
+
+    def test_validate_normattiva_url_valid(self):
+        """Test that valid normattiva.it HTTPS URLs are accepted"""
+        valid_urls = [
+            "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53",
+            "https://normattiva.it/do/atto/caricaAKN?test=123"
+        ]
+        for url in valid_urls:
+            with self.subTest(url=url):
+                # Should not raise exception
+                self.assertTrue(validate_normattiva_url(url))
+
+    def test_validate_normattiva_url_rejects_http(self):
+        """Test that HTTP (non-HTTPS) URLs are rejected"""
+        with self.assertRaises(ValueError) as context:
+            validate_normattiva_url("http://www.normattiva.it/test")
+        self.assertIn("HTTPS", str(context.exception))
+
+    def test_validate_normattiva_url_rejects_wrong_domain(self):
+        """Test that URLs from other domains are rejected"""
+        malicious_urls = [
+            "https://evil.com/malware",
+            "https://www.google.com/search",
+            "https://normattiva.it.evil.com/fake"
+        ]
+        for url in malicious_urls:
+            with self.subTest(url=url):
+                with self.assertRaises(ValueError) as context:
+                    validate_normattiva_url(url)
+                self.assertIn("Dominio non consentito", str(context.exception))
+
+    def test_is_normattiva_url_validates_security(self):
+        """Test that is_normattiva_url rejects insecure URLs"""
+        # HTTP should be rejected
+        self.assertFalse(is_normattiva_url("http://www.normattiva.it/test"))
+        # HTTPS should be accepted
+        self.assertTrue(is_normattiva_url("https://www.normattiva.it/test"))
+        # Wrong domain should be rejected
+        self.assertFalse(is_normattiva_url("https://evil.com/test"))
+
+    def test_sanitize_output_path_accepts_safe_paths(self):
+        """Test that safe output paths are accepted"""
+        safe_paths = [
+            "output.md",
+            "./output.md",
+            "subdir/output.md",
+            "/tmp/safe_output.md"
+        ]
+        for path in safe_paths:
+            with self.subTest(path=path):
+                # Should not raise exception
+                result = sanitize_output_path(path)
+                self.assertIsInstance(result, str)
+                self.assertTrue(os.path.isabs(result))
+
+    def test_sanitize_output_path_rejects_traversal(self):
+        """Test that path traversal attempts are rejected"""
+        malicious_paths = [
+            "../../../etc/passwd",
+            "/etc/passwd",
+            "/sys/kernel/debug",
+            "output/../../../etc/passwd"
+        ]
+        for path in malicious_paths:
+            with self.subTest(path=path):
+                with self.assertRaises(ValueError) as context:
+                    sanitize_output_path(path)
+                self.assertIn("Path non sicuro", str(context.exception))
+
+    def test_sanitize_output_path_rejects_empty(self):
+        """Test that empty paths are rejected"""
+        with self.assertRaises(ValueError) as context:
+            sanitize_output_path("")
+        self.assertIn("vuoto", str(context.exception))
+
+    def test_file_size_limit_constant_defined(self):
+        """Test that file size limit constants are properly defined"""
+        self.assertIsInstance(MAX_FILE_SIZE_BYTES, int)
+        self.assertGreater(MAX_FILE_SIZE_BYTES, 0)
+        # Should be reasonable (e.g., 50MB)
+        self.assertGreater(MAX_FILE_SIZE_BYTES, 1024 * 1024)  # > 1MB
+        self.assertLess(MAX_FILE_SIZE_BYTES, 1024 * 1024 * 1024)  # < 1GB
 
 
 if __name__ == "__main__":
