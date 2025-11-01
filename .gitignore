@@ -24,6 +24,14 @@ test_*.md
 temp_*.xml
 *.debug.html
 
+# Conversioni di leggi specifiche (non committare output in root)
+anticorruzione.md
+codice_civile.md
+costituzione.md
+privacy.md
+codice_*.md
+legge_*.md
+
 # Build artifacts
 akoma2md.egg-info/
 build/
