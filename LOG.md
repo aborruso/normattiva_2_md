@@ -10,6 +10,7 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 - Verifiche incluse nel workflow: `make test` su Linux, unittest + run CLI/exe su Windows
 - Asset generati: `akoma2md-<version>-linux-x86_64.tar.gz` e `akoma2md-<version>-windows-x86_64.zip` pubblicati automaticamente nelle release taggate
 - Aggiornato `README.md` con procedura operativa per pubblicare nuovi binari
+- Incrementata versione progetto a `1.1.3` (`setup.py`, `pyproject.toml`) in preparazione alla release
 
 ### README: rimossi riferimenti release inesistenti
 
