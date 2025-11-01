@@ -4,6 +4,19 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-01
 
+### README: rimossi riferimenti release inesistenti
+
+- Rimossa sezione "Eseguibile Standalone" con link a release inesistenti
+- Riorganizzati metodi installazione: uv (raccomandato), pip, esecuzione diretta
+- Chiarito che build pyinstaller è opzionale per uso locale
+
+### Consolidamento Documentazione Verifiche
+
+- Uniti `VERIFICATION_TASKS.md` e `VERIFICATION_REPORT.md` → `VERIFICATION.md`
+- Documento sintetico: stato verifiche, fix implementati, checklist
+- Rimossi file test: `test_*.md`, `output_normattiva.json`, build artifacts
+- Aggiornati riferimenti in `AGENTS.md`, `.gemini/GEMINI.md`
+
 ### Fix Heading Capo/Sezione
 
 - **IMPLEMENTATO**: Separazione automatica heading Capo/Sezione

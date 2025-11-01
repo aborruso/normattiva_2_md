@@ -54,4 +54,4 @@ Durante lo sviluppo, viene mantenuta una documentazione aggiornata per tracciare
 
 - `PRD.md`: Documento dei requisiti di prodotto, che evolve con la comprensione degli obiettivi.
 
-- `VERIFICATION_TASKS.md`: Elenco di task specifici per la verifica e il miglioramento dell'output.
+- `VERIFICATION.md`: Checklist e stato verifiche qualità output Markdown.

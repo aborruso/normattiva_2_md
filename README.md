@@ -18,27 +18,16 @@
 
 ## 📦 Installazione
 
-### Metodo 1: Eseguibile Standalone (Raccomandato)
-
-Scarica l'eseguibile precompilato dalla sezione [Releases](https://github.com/yourusername/akoma2md/releases):
+### Installazione con uv (Raccomandato)
 
 ```bash
-# Su Linux/macOS
-chmod +x akoma2md
-./akoma2md input.xml output.md
-
-# Su Windows
-akoma2md.exe input.xml output.md
-```
-
-### Metodo 2: Installazione via pip
-
-```bash
-pip install akoma2md
+git clone https://github.com/yourusername/akoma2md.git
+cd akoma2md
+uv tool install .
 akoma2md input.xml output.md
 ```
 
-### Metodo 3: Installazione da sorgenti
+### Installazione da sorgenti
 
 ```bash
 git clone https://github.com/yourusername/akoma2md.git
@@ -47,9 +36,11 @@ pip install -e .
 akoma2md input.xml output.md
 ```
 
-### Metodo 4: Esecuzione diretta
+### Esecuzione diretta (senza installazione)
 
 ```bash
+git clone https://github.com/yourusername/akoma2md.git
+cd akoma2md
 python convert_akomantoso.py input.xml output.md
 ```
 
@@ -182,11 +173,14 @@ source venv/bin/activate  # Su Windows: venv\Scripts\activate
 pip install -e .
 ```
 
-### Build dell'eseguibile
+### Build eseguibile standalone (opzionale)
+
+Per creare un eseguibile standalone per uso locale:
 
 ```bash
 pip install pyinstaller
 pyinstaller --onefile --name akoma2md convert_akomantoso.py
+# L'eseguibile sarà in dist/akoma2md
 ```
 
 ### Test

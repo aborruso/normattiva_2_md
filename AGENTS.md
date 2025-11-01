@@ -4,7 +4,7 @@
 - `convert_akomantoso.py` is the CLI and XML→Markdown pipeline; keep new parsing helpers near `process_article`.
 - `resources/` and `test_data/` hold reference outputs and fixtures; stash oversized XMLs outside Git and log their source in `LOG.md`.
 - Distribution artifacts live in `build/`, `dist/`, and `akoma2md.spec`; rebuild via the Makefile, never tweak binaries directly.
-- `logs/`, `LOG.md`, and `VERIFICATION_TASKS.md` capture experiments—update them whenever behaviour shifts.
+- `logs/`, `LOG.md`, and `VERIFICATION.md` capture experiments—update them whenever behaviour shifts.
 
 ## Build, Test, and Development Commands
 - `python convert_akomantoso.py INPUT.xml OUTPUT.md` runs the converter directly; use it for quick iteration.
