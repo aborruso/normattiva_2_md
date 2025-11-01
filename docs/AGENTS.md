@@ -4,14 +4,16 @@
 - `convert_akomantoso.py` is the CLI and XML→Markdown pipeline; keep new parsing helpers near `process_article`.
 - `resources/` and `test_data/` hold reference outputs and fixtures; stash oversized XMLs outside Git and log their source in `LOG.md`.
 - Distribution artifacts live in `build/`, `dist/`, and `akoma2md.spec`; rebuild via the Makefile, never tweak binaries directly.
-- `logs/`, `LOG.md`, and `VERIFICATION.md` capture experiments—update them whenever behaviour shifts.
+- `docs/` contiene la documentazione (`*.md` non operativi); mantieni `README.md`, `LOG.md` e `VERIFICATION.md` in root.
+- `scripts/` raccoglie le utility shell (`*.sh`) per build e test ripetibili.
+- `logs/`, `LOG.md`, e `VERIFICATION.md` catturano esperimenti—aggiornali quando il comportamento cambia.
 
 ## Build, Test, and Development Commands
 - `python convert_akomantoso.py INPUT.xml OUTPUT.md` runs the converter directly; use it for quick iteration.
 - `make build` performs a clean PyInstaller build into `dist/akoma2md`; rerun after packaging changes.
 - `make install` installs the editable package (console script `akoma2md`) into the active virtualenv.
 - `make test` runs smoke tests; ensure `20050516_005G0104_VIGENZA_20250130.xml` sits in the repo root.
-- `./build_distribution.sh` chains clean, build, tests, and optional wheel creation for release candidates.
+- `./scripts/build_distribution.sh` chains clean, build, tests, and optional wheel creation for release candidates.
 
 ## Coding Style & Naming Conventions
 - Follow PEP 8: 4-space indentation, snake_case for functions, UPPER_SNAKE_CASE for constants.
@@ -21,7 +23,7 @@
 
 ## Testing Guidelines
 - Add deterministic XML samples under `test_data/` and record their provenance; avoid bundling restricted texts.
-- Extend `test_compatibility.sh` or build pytest cases that assert Markdown fragments for known inputs.
+- Extend `scripts/test_compatibility.sh` or build pytest cases that assert Markdown fragments for known inputs.
 - Run `make test` before pushing and log intentional diffs in `VERIFICATION_TASKS.md`.
 
 ## Commit & Pull Request Guidelines

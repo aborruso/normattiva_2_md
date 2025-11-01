@@ -4,6 +4,13 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-01
 
+### Riorganizzazione documentazione e script
+
+- Creati `docs/` e `scripts/` per raccogliere rispettivamente documentazione ausiliaria e utility shell.
+- Spostati `AGENTS.md`, `CLAUDE.md`, `COMPATIBILITY_ROADMAP.md`, `PRD.md`, `URL_NORMATTIVA.md` in `docs/`.
+- Spostati `build_distribution.sh`, `test_compatibility.sh`, `test_url_types.sh` in `scripts/`.
+- Aggiornati riferimenti in `README.md` e `docs/AGENTS.md` alle nuove posizioni; `LOG.md` e `VERIFICATION.md` restano in root come da linee guida.
+
 ### Automazione release binarie
 
 - Aggiunto workflow GitHub Actions `Build Releases` (`.github/workflows/release-binaries.yml`) per creare e impacchettare eseguibili PyInstaller Linux/Windows ad ogni tag `v*` o esecuzione manuale

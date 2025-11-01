@@ -132,7 +132,7 @@ Lo strumento supporta documenti XML in formato **Akoma Ntoso 3.0**, inclusi:
 - 📜 **Regolamenti**
 - 📜 **Altri atti normativi**
 
-📖 **Guida agli URL**: Consulta [URL_NORMATTIVA.md](URL_NORMATTIVA.md) per la struttura completa degli URL e esempi pratici.
+📖 **Guida agli URL**: Consulta [URL_NORMATTIVA.md](docs/URL_NORMATTIVA.md) per la struttura completa degli URL e esempi pratici.
 
 ### Strutture supportate
 
