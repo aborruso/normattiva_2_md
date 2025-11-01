@@ -19,3 +19,12 @@ Thumbs.db
 
 # File di output generati
 output*.md
+test_output/
+test_*.md
+temp_*.xml
+*.debug.html
+
+# Build artifacts
+akoma2md.egg-info/
+build/
+dist/

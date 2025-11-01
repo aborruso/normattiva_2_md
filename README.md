@@ -55,7 +55,22 @@ python convert_akomantoso.py input.xml output.md
 
 ## 💻 Utilizzo
 
-### Sintassi di base
+### Metodo 1: Da URL Normattiva (consigliato)
+
+Converti direttamente da un URL di normattiva.it:
+
+```bash
+# Conversione diretta URL → Markdown
+python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" -o legge.md
+
+# Salva solo il file XML Akoma Ntoso
+python fetch_from_url.py "URL_NORMATTIVA" --xml-only -o documento.xml
+
+# Mantieni il file XML dopo la conversione
+python fetch_from_url.py "URL_NORMATTIVA" -o legge.md --keep-xml
+```
+
+### Metodo 2: Da file XML locale
 
 ```bash
 # Argomenti posizionali (più semplice)
@@ -69,7 +84,10 @@ akoma2md --input input.xml --output output.md
 ### Esempi pratici
 
 ```bash
-# Convertire un decreto legislativo
+# Convertire da URL normattiva
+python fetch_from_url.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82" -o cad.md
+
+# Convertire un file XML locale
 akoma2md decreto_82_2005.xml codice_amministrazione_digitale.md
 
 # Con percorsi assoluti
@@ -77,6 +95,7 @@ akoma2md /path/to/document.xml /path/to/output.md
 
 # Visualizzare l'help
 akoma2md --help
+python fetch_from_url.py --help
 ```
 
 ### Opzioni disponibili
@@ -104,8 +123,12 @@ Lo strumento supporta documenti XML in formato **Akoma Ntoso 3.0**, inclusi:
 
 - 📜 **Decreti legislativi**
 - 📜 **Leggi**
+- 📜 **Decreti legge**
+- 📜 **Costituzione**
 - 📜 **Regolamenti**
 - 📜 **Altri atti normativi**
+
+📖 **Guida agli URL**: Consulta [URL_NORMATTIVA.md](URL_NORMATTIVA.md) per la struttura completa degli URL e esempi pratici.
 
 ### Strutture supportate
 
