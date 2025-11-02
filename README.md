@@ -75,21 +75,6 @@ cd normattiva_2_md
 python convert_akomantoso.py input.xml output.md
 ```
 
-### Installazione Gemini CLI (opzionale)
-
-Per utilizzare la funzionalità di ricerca per nome naturale, installa [Gemini CLI](https://github.com/google/gemini-cli):
-
-```bash
-# Installazione globale
-npm install -g @google/gemini-cli
-
-# Oppure esecuzione diretta senza installazione
-npx @google/gemini-cli
-
-# Configurazione (richiede API key Google AI)
-gemini setup
-```
-
 ## 💻 Utilizzo
 
 ### Metodo 1: Da URL Normattiva (consigliato)
@@ -266,7 +251,8 @@ dataVigenza: 20251101
 ### Requisiti
 
 - Python 3.7+
-- Nessuna dipendenza esterna
+- Nessuna dipendenza esterna per conversione XML→Markdown (solo librerie standard Python)
+- [Gemini CLI](https://github.com/google/gemini-cli) per funzionalità ricerca per nome naturale
 
 ### Configurazione dell'ambiente di sviluppo
 
