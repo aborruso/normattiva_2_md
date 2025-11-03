@@ -318,7 +318,8 @@ class URLLookupTest(unittest.TestCase):
         mock_result.stdout = '{"response": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205"}'
         mock_result.stderr = ""
 
-        with mock.patch('subprocess.run', return_value=mock_result):
+        with mock.patch('subprocess.run', return_value=mock_result), \
+             mock.patch('shutil.which', return_value='/usr/bin/gemini'):
             result = lookup_normattiva_url("legge stanca")
             self.assertEqual(result, "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205")
 
@@ -331,7 +332,8 @@ class URLLookupTest(unittest.TestCase):
         mock_result.stdout = '{"response": "Non ho trovato corrispondenze per questa ricerca"}'
         mock_result.stderr = ""
 
-        with mock.patch('subprocess.run', return_value=mock_result):
+        with mock.patch('subprocess.run', return_value=mock_result), \
+             mock.patch('shutil.which', return_value='/usr/bin/gemini'):
             result = lookup_normattiva_url("legge inesistente")
             self.assertIsNone(result)
 
@@ -344,7 +346,8 @@ class URLLookupTest(unittest.TestCase):
         mock_result.stdout = ""
         mock_result.stderr = "Error from Gemini"
 
-        with mock.patch('subprocess.run', return_value=mock_result):
+        with mock.patch('subprocess.run', return_value=mock_result), \
+             mock.patch('shutil.which', return_value='/usr/bin/gemini'):
             result = lookup_normattiva_url("test query")
             self.assertIsNone(result)
 
@@ -352,7 +355,7 @@ class URLLookupTest(unittest.TestCase):
         """Test when Gemini CLI is not installed"""
         import unittest.mock as mock
 
-        with mock.patch('subprocess.run', side_effect=FileNotFoundError):
+        with mock.patch('shutil.which', return_value=None):
             result = lookup_normattiva_url("test query")
             self.assertIsNone(result)
 
