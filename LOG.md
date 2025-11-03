@@ -4,6 +4,29 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-05
 
+### 🚀 Rilascio Versione 1.6.1
+
+**Miglioramenti principali:**
+- ✅ Rimozione supporto URL esportazione atto intero non funzionanti
+- ✅ Miglioramento gestione URL normattiva.it con messaggi di errore chiari
+- ✅ Pulizia codice e rimozione funzioni obsolete
+
+#### ✨ Miglioramenti Implementati
+- **Rimozione URL Esportazione**: Gli URL `/esporta/attoCompleto` non sono più supportati perché richiedono autenticazione
+- **Messaggi di Errore Migliorati**: Messaggi chiari che guidano l'utente a usare URL permalink (URN)
+- **Supporto Esclusivo Permalink**: Solo URL URN funzionanti sono supportati per garantire affidabilità
+- **Pulizia Codice**: Rimozione funzioni e logica obsolete per URL di esportazione
+
+#### 🔧 Miglioramenti Tecnici
+- Validazione più rigorosa degli URL di input
+- Messaggi di errore informativi per URL non supportati
+- Mantenimento compatibilità con URL permalink esistenti
+
+#### 📦 Pubblicazione
+- Versione 1.6.1 pronta per rilascio su PyPI e GitHub
+
+## 2025-11-05
+
 ### 🚀 Rilascio Versione 1.6.0
 
 **Nuove funzionalità principali:**
@@ -18,6 +41,14 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 #### 🔧 Miglioramenti Tecnici
 - Implementazione robusta del riconoscimento comandi nel PATH
+
+#### 📦 Pubblicazione PyPI
+- ✅ Pacchetto v1.6.0 caricato con successo su PyPI
+- ✅ Verifica installazione riuscita da repository remoto
+
+#### 🚀 Rilascio GitHub
+- ✅ Release v1.6.0 creata automaticamente con binari Linux e Windows
+- ✅ CI/CD pipeline completata con successo
 - Gestione errori migliorata per configurazioni Gemini incomplete
 - Documentazione aggiornata con nuovi esempi di utilizzo
 

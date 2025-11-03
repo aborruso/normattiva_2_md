@@ -17,7 +17,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '1.6.0'
+VERSION = '1.6.1'
 
 def extract_metadata_from_xml(root):
     """
@@ -314,6 +314,9 @@ def is_normattiva_export_url(url):
     """
     Verifica se l'URL è un URL di esportazione atto intero di normattiva.it
 
+    Questi URL non sono supportati perché richiedono autenticazione per il download XML.
+    Si consiglia di usare gli URL permalink (URN) invece.
+
     Args:
         url: URL da verificare
 
@@ -349,155 +352,9 @@ def parse_article_reference(url):
 
     return None
 
-def convert_export_url_to_law_url(export_url):
-    """
-    Converte un URL di esportazione atto intero nell'URL equivalente della pagina legge
 
-    Args:
-        export_url: URL di esportazione
 
-    Returns:
-        str: URL della pagina legge o None se errore
-    """
-    from urllib.parse import urlparse, parse_qs
 
-    try:
-        parsed = urlparse(export_url)
-        query_params = parse_qs(parsed.query)
-
-        data_gu = query_params.get('atto.dataPubblicazioneGazzetta', [None])[0]
-        codice_redaz = query_params.get('atto.codiceRedazionale', [None])[0]
-
-        if not data_gu or not codice_redaz:
-            return None
-
-        # Validate formats
-        if not re.match(r'^\d{4}-\d{2}-\d{2}$', data_gu):
-            return None
-        if not re.match(r'^\d{2}[A-Z]\d{5}$', codice_redaz):
-            return None
-
-        # Extract year, month, day
-        year, month, day = data_gu.split('-')
-        
-        # Extract number from codice_redaz (remove leading zeros)
-        number = codice_redaz[3:].lstrip('0')
-        
-        # Assume decreto-legge for now (can be improved)
-        urn = f"urn:nir:stato:decreto-legge:{year}-{month}-{day};{number}"
-        law_url = f"https://www.normattiva.it/uri-res/N2Ls?{urn}"
-        
-        return law_url
-
-    except Exception:
-        return None
-
-def extract_params_from_export_url(url, session=None, quiet=False):
-    """
-    Estrae i parametri dall'URL di esportazione atto intero
-
-    Args:
-        url: URL di esportazione atto intero
-        session: sessione requests da usare (opzionale)
-        quiet: se True, stampa solo errori
-
-    Returns:
-        tuple: (params dict, session) o (None, session) se errore
-    """
-    from urllib.parse import urlparse, parse_qs
-
-    if session is None:
-        session = requests.Session()
-
-    # Visit the export page to get cookies/session
-    headers = {
-        'User-Agent': f'Akoma2MD/{VERSION} (https://github.com/ondata/akoma2md)',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'it-IT,it;q=0.9,en;q=0.9,en;q=0.8'
-    }
-
-    try:
-        if not quiet:
-            print(f"Visito pagina esportazione {url}...", file=sys.stderr)
-        response = session.get(url, headers=headers, timeout=DEFAULT_TIMEOUT, verify=True)
-        response.raise_for_status()
-    except requests.RequestException as e:
-        print(f"Errore nel visitare la pagina di esportazione: {e}", file=sys.stderr)
-        return None, session
-
-    try:
-        parsed = urlparse(url)
-        query_params = parse_qs(parsed.query)
-
-        # Extract parameters from query string
-        data_gu = query_params.get('atto.dataPubblicazioneGazzetta', [None])[0]
-        codice_redaz = query_params.get('atto.codiceRedazionale', [None])[0]
-
-        if not data_gu or not codice_redaz:
-            return None, session
-
-        # Validate date format (YYYY-MM-DD)
-        if not re.match(r'^\d{4}-\d{2}-\d{2}$', data_gu):
-            return None, session
-
-        # Validate codice redazionale format (e.g., 18G00112)
-        if not re.match(r'^\d{2}[A-Z]\d{5}$', codice_redaz):
-            return None, session
-
-        # For dataVigenza, try to extract from the page like the original function
-        html = response.text
-        match_vigenza = re.search(r'<input[^>]*value="(\d{2}/\d{2}/\d{4})"[^>]*>', html)
-        if match_vigenza:
-            # Converti da formato DD/MM/YYYY a YYYYMMDD
-            date_parts = match_vigenza.group(1).split('/')
-            data_vigenza = f"{date_parts[2]}{date_parts[1]}{date_parts[0]}"
-        else:
-            # Usa data odierna se non trovata
-            from datetime import datetime
-            data_vigenza = datetime.now().strftime('%Y%m%d')
-
-        return {
-            'dataGU': data_gu.replace('-', ''),
-            'codiceRedaz': codice_redaz,
-            'dataVigenza': data_vigenza
-        }, session
-
-    except Exception:
-        return None, session
-
-        # Validate date format (YYYY-MM-DD)
-        if not re.match(r'^\d{4}-\d{2}-\d{2}$', data_gu):
-            return None
-
-        # Validate codice redazionale format (e.g., 18G00112)
-        if not re.match(r'^\d{2}[A-Z]\d{5}$', codice_redaz):
-            return None
-
-        # Validate date format (YYYY-MM-DD)
-        if not re.match(r'^\d{4}-\d{2}-\d{2}$', data_gu):
-            print(f"Debug: data_gu format invalid: {data_gu}", file=sys.stderr)
-            return None
-
-        # Validate codice redazionale format (e.g., 18G00112)
-        if not re.match(r'^\d{2}[A-Z]\d{5}$', codice_redaz):
-            print(f"Debug: codice_redaz format invalid: {codice_redaz}", file=sys.stderr)
-            return None
-
-        # Convert date format from YYYY-MM-DD to YYYYMMDD
-        data_gu = data_gu.replace('-', '')
-
-        # For dataVigenza, use current date as fallback (same as original function)
-        from datetime import datetime
-        data_vigenza = datetime.now().strftime('%Y%m%d')
-
-        return {
-            'dataGU': data_gu,
-            'codiceRedaz': codice_redaz,
-            'dataVigenza': data_vigenza
-        }
-
-    except Exception:
-        return None
 
 def filter_xml_to_article(root, article_eid, ns):
     """
@@ -547,11 +404,11 @@ def extract_params_from_normattiva_url(url, session=None, quiet=False):
     """
     Scarica la pagina normattiva e estrae i parametri necessari per il download
 
-    Supporta due tipi di URL normattiva.it:
-    1. URL pagine legge: https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:...
-       - Vengono scaricate e i parametri estratti dagli input hidden
-    2. URL esportazione atto intero: https://www.normattiva.it/esporta/attoCompleto?...
-       - Vengono convertiti nell'URL legge equivalente e processati come sopra
+    Supporta URL permalink (URN) di normattiva.it visitando la pagina HTML
+    e estraendo i parametri dagli input hidden.
+
+    Gli URL di esportazione atto intero (/esporta/attoCompleto) non sono supportati
+    perché richiedono autenticazione per il download XML. Usa gli URL permalink invece.
 
     Args:
         url: URL della norma su normattiva.it
@@ -561,18 +418,15 @@ def extract_params_from_normattiva_url(url, session=None, quiet=False):
     Returns:
         tuple: (params dict, session)
     """
-    # Check if it's an export URL - convert to equivalent law URL and process as law page
+    # Reject export URLs as they require authentication
     if is_normattiva_export_url(url):
-        law_url = convert_export_url_to_law_url(url)
-        if law_url:
-            if not quiet:
-                print(f"Converto URL esportazione a URL legge: {law_url}", file=sys.stderr)
-            # Recursively call with the law URL
-            return extract_params_from_normattiva_url(law_url, session, quiet)
-        else:
-            return None, session
+        print("❌ ERRORE: Gli URL di esportazione atto intero (/esporta/attoCompleto) non sono supportati", file=sys.stderr)
+        print("   perché richiedono autenticazione per il download XML.", file=sys.stderr)
+        print("   Usa invece gli URL permalink (URN) come:", file=sys.stderr)
+        print("   https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:AAAA-MM-GG;N", file=sys.stderr)
+        return None, session
 
-    # Otherwise, scrape the law page as before
+    # For permalink URLs, visit the page and extract parameters from HTML
     if not quiet:
         print(f"Caricamento pagina {url}...", file=sys.stderr)
 

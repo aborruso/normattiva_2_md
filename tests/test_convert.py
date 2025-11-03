@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 import xml.etree.ElementTree as ET
 from pathlib import Path
 import tempfile
@@ -17,6 +18,7 @@ from convert_akomantoso import (
     sanitize_output_path,
     is_normattiva_url,
     lookup_normattiva_url,
+    extract_params_from_normattiva_url,
     MAX_FILE_SIZE_BYTES
 )
 
@@ -187,6 +189,34 @@ dataGU: 20231201
         metadata = {}
         result = generate_front_matter(metadata)
         self.assertEqual(result, "")
+
+    @patch('convert_akomantoso.extract_params_from_export_url')
+    def test_export_url_parameters_are_extracted_directly(self, mock_extract):
+        mock_extract.return_value = (
+            {
+                'dataGU': '20180713',
+                'codiceRedaz': '18G00112',
+                'dataVigenza': '20180715'
+            },
+            'same-session'
+        )
+
+        url = ("https://www.normattiva.it/esporta/attoCompleto"
+               "?atto.dataPubblicazioneGazzetta=2018-07-13"
+               "&atto.codiceRedazionale=18G00112")
+
+        params, session = extract_params_from_normattiva_url(url)
+
+        self.assertEqual(
+            params,
+            {
+                'dataGU': '20180713',
+                'codiceRedaz': '18G00112',
+                'dataVigenza': '20180715'
+            }
+        )
+        self.assertEqual(session, 'same-session')
+        mock_extract.assert_called_once_with(url, session=None, quiet=False)
 
     def test_extract_metadata_from_xml(self):
         """Test metadata extraction from XML"""
