@@ -2,6 +2,14 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2025-11-04
+
+### 🚀 Release v1.7.2: Fix Query Exa API
+
+- Rimosso parametro ridondante `site:normattiva.it` dalla query Exa
+- Filtro dominio già gestito correttamente da `includeDomains` parameter
+- Query più pulita e aderente alla documentazione ufficiale Exa
+
 ## 2025-11-03
 
 ### 🚀 Release v1.7.1: Caricamento Automatico .env

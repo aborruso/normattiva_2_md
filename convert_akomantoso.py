@@ -1033,9 +1033,9 @@ def lookup_normattiva_url(search_query):
             "Content-Type": "application/json"
         }
 
-        # Query ottimizzata per cercare su normattiva.it
+        # Payload per Exa API - filtro dominio tramite includeDomains
         payload = {
-            "query": f"{search_query} site:normattiva.it",
+            "query": search_query,
             "includeDomains": ["normattiva.it"],
             "numResults": 5,
             "type": "auto"
