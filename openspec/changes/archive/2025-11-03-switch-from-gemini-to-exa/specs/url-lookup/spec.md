@@ -1,8 +1,4 @@
-# url-lookup Specification
-
-## Purpose
-TBD - created by archiving change add-natural-language-url-lookup. Update Purpose after archive.
-## Requirements
+## MODIFIED Requirements
 ### Requirement: Natural Language URL Lookup
 The system SHALL accept natural language strings describing legal documents and use Exa AI API to find corresponding normattiva.it URLs for conversion.
 
@@ -26,4 +22,3 @@ The system SHALL accept natural language strings describing legal documents and 
 - **WHEN** Exa returns multiple potential URLs
 - **THEN** the system SHALL use the most relevant match
 - **OR** prompt user to choose if interactive mode is available
-

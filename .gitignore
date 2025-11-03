@@ -36,3 +36,4 @@ legge_*.md
 akoma2md.egg-info/
 build/
 dist/
+.env

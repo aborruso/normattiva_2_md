@@ -2,6 +2,68 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2025-11-03
+
+### 🚀 Release v1.7.0: Ricerca AI con Exa - Performance e Semplicità
+
+**Maggiore velocità e semplicità:** Sostituzione infrastruttura ricerca da Gemini CLI a Exa AI API con prestazioni significativamente migliorate
+
+#### ✨ Nuove Funzionalità Principali
+- **Exa AI Integration**: Passaggio da Gemini CLI a Exa AI API per ricerca intelligente documenti legali
+- **Configurazione Semplificata**: Solo variabile d'ambiente `EXA_API_KEY` invece di installazione CLI esterna
+- **Ricerca Ottimizzata**: Utilizzo `includeDomains: ["normattiva.it"]` per ricerche mirate e precise
+- **Performance Migliorata**: Risposte più veloci grazie alla specializzazione di Exa per web search
+
+#### 🔧 Miglioramenti Tecnici
+- **API Moderna**: Integrazione diretta con Exa AI API invece di subprocess CLI
+- **Gestione Errori**: Timeout 30s, validazione HTTP status, parsing JSON robusto
+- **Sicurezza**: API key protetta in file `.env` (già nel `.gitignore`)
+- **Codice Pulito**: Refactoring completo di `lookup_normattiva_url()` senza dipendenze esterne
+
+#### 🧪 Testing e Qualità
+- **Test End-to-End**: Validazione con ricerche reali ("legge stanca", "decreto dignità", "costituzione italiana")
+- **Suite Completa**: Tutti test unitari aggiornati per mockare Exa API
+- **Conversione Verificata**: XML→Markdown con front matter e struttura gerarchica corretta
+- **Retrocompatibilità**: Mantenuta interfaccia CLI esistente (`--search/-s`)
+
+#### 📦 Distribuzione
+- **Versione**: 1.7.0 con changelog completo
+- **PyPI**: Pubblicazione automatica su Python Package Index
+- **GitHub Releases**: Binari standalone per Linux e Windows
+- **Documentazione**: README aggiornato con istruzioni Exa AI
+
+## 2025-11-03
+
+### 🔄 Sostituzione Gemini con Exa per Ricerca AI
+
+**Cambio infrastruttura ricerca:** Passaggio da Gemini CLI a Exa AI API per funzionalità di ricerca naturale documenti legali
+
+#### ✅ Modifiche Implementate
+- **Sostituzione API**: Rimpiazzato Gemini CLI con Exa AI API per ricerca intelligente
+- **Configurazione semplificata**: Passaggio da installazione CLI esterna a variabile d'ambiente EXA_API_KEY
+- **Ricerca ottimizzata**: Utilizzo `includeDomains` per limitare ricerca esclusivamente a normattiva.it
+- **Codice aggiornato**: Refactoring completo funzione `lookup_normattiva_url()` con gestione errori migliorata
+- **Test aggiornati**: Tutti test di regressione modificati per mockare Exa API invece di Gemini CLI
+
+#### 🔧 Dettagli Tecnici
+- **Endpoint API**: `https://api.exa.ai/search` con parametri ottimizzati per ricerca legale
+- **Query format**: `{search_query} site:normattiva.it` per precisione risultati
+- **Gestione errori**: Timeout 30s, validazione HTTP status, parsing JSON robusto
+- **Compatibilità**: Mantenuta interfaccia CLI esistente (`--search/-s`)
+
+#### 🧪 Testing e Validazione
+- **Test end-to-end**: Ricerca "legge stanca" → Decreto Legislativo 4/2004 ✅
+- **Test multipli**: Ricerca "decreto dignità" → Decreto-legge 87/2018 ✅
+- **Test costituzione**: Ricerca "costituzione italiana" → Costituzione 1947 ✅
+- **Conversione completa**: XML→Markdown con front matter e struttura gerarchica corretta
+- **Suite test**: Tutti test unitari passano senza regressioni
+
+#### 📦 Impatto
+- **Dipendenze**: Rimossa necessità installazione Gemini CLI, aggiunta configurazione API key
+- **Performance**: Risposta più veloce con ricerca domain-specific
+- **Manutenibilità**: Codice più semplice senza gestione subprocess esterni
+- **Sicurezza**: API key protetta in file .env (già nel .gitignore)
+
 ## 2025-11-05
 
 ### 🚀 Rilascio Versione 1.6.1

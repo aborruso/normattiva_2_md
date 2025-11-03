@@ -339,53 +339,75 @@ class URLLookupTest(unittest.TestCase):
     """Test cases for natural language URL lookup functionality"""
 
     def test_lookup_normattiva_url_with_mock_success(self):
-        """Test successful URL lookup with mocked Gemini CLI"""
+        """Test successful URL lookup with mocked Exa API"""
         import unittest.mock as mock
 
-        # Mock successful subprocess call - Gemini CLI returns JSON
-        mock_result = mock.MagicMock()
-        mock_result.returncode = 0
-        mock_result.stdout = '{"response": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205"}'
-        mock_result.stderr = ""
+        # Mock successful Exa API response
+        mock_response = mock.MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "results": [
+                {
+                    "url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205",
+                    "title": "Legge di Bilancio 2019"
+                }
+            ]
+        }
 
-        with mock.patch('subprocess.run', return_value=mock_result), \
-             mock.patch('shutil.which', return_value='/usr/bin/gemini'):
+        with mock.patch('os.getenv', return_value='fake-api-key'), \
+             mock.patch('requests.post', return_value=mock_response):
             result = lookup_normattiva_url("legge stanca")
             self.assertEqual(result, "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2018-12-30;205")
 
     def test_lookup_normattiva_url_no_url_found(self):
-        """Test when Gemini doesn't return a valid URL"""
+        """Test when Exa API doesn't return valid results"""
         import unittest.mock as mock
 
-        mock_result = mock.MagicMock()
-        mock_result.returncode = 0
-        mock_result.stdout = '{"response": "Non ho trovato corrispondenze per questa ricerca"}'
-        mock_result.stderr = ""
+        mock_response = mock.MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {"results": []}
 
-        with mock.patch('subprocess.run', return_value=mock_result), \
-             mock.patch('shutil.which', return_value='/usr/bin/gemini'):
+        with mock.patch('os.getenv', return_value='fake-api-key'), \
+             mock.patch('requests.post', return_value=mock_response):
             result = lookup_normattiva_url("legge inesistente")
             self.assertIsNone(result)
 
-    def test_lookup_normattiva_url_gemini_error(self):
-        """Test when Gemini CLI returns an error"""
+    def test_lookup_normattiva_url_exa_error(self):
+        """Test when Exa API returns an error"""
         import unittest.mock as mock
 
-        mock_result = mock.MagicMock()
-        mock_result.returncode = 1
-        mock_result.stdout = ""
-        mock_result.stderr = "Error from Gemini"
+        mock_response = mock.MagicMock()
+        mock_response.status_code = 401
+        mock_response.text = "Invalid API key"
 
-        with mock.patch('subprocess.run', return_value=mock_result), \
-             mock.patch('shutil.which', return_value='/usr/bin/gemini'):
+        with mock.patch('os.getenv', return_value='fake-api-key'), \
+             mock.patch('requests.post', return_value=mock_response):
             result = lookup_normattiva_url("test query")
             self.assertIsNone(result)
 
-    def test_lookup_normattiva_url_cli_not_found(self):
-        """Test when Gemini CLI is not installed"""
+    def test_lookup_normattiva_url_api_key_missing(self):
+        """Test when Exa API key is not configured"""
         import unittest.mock as mock
 
-        with mock.patch('shutil.which', return_value=None):
+        with mock.patch('os.getenv', return_value=None):
+            result = lookup_normattiva_url("test query")
+            self.assertIsNone(result)
+
+    def test_lookup_normattiva_url_invalid_results(self):
+        """Test when Exa API returns results but no valid normattiva URLs"""
+        import unittest.mock as mock
+
+        mock_response = mock.MagicMock()
+        mock_response.status_code = 200
+        mock_response.json.return_value = {
+            "results": [
+                {"url": "https://example.com/page1"},
+                {"url": "https://google.com/search"}
+            ]
+        }
+
+        with mock.patch('os.getenv', return_value='fake-api-key'), \
+             mock.patch('requests.post', return_value=mock_response):
             result = lookup_normattiva_url("test query")
             self.assertIsNone(result)
 

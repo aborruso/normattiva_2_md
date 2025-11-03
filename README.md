@@ -28,7 +28,7 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 - ✅ **CLI flessibile** con argomenti posizionali e nominati
 - ✅ **Gestione errori robusta** con messaggi informativi
 - ✅ **Nessuna dipendenza esterna** per conversione XML→Markdown (solo librerie standard Python)
-- ✅ **Ricerca per nome naturale** richiede [Gemini CLI](https://github.com/google-gemini/gemini-cli) per l'integrazione AI
+- ✅ **Ricerca per nome naturale** richiede [Exa AI API](https://exa.ai) per l'integrazione AI
 
 ## 📦 Installazione
 
@@ -47,16 +47,16 @@ pip install akoma2md
 akoma2md input.xml output.md
 ```
 
-### Installazione Gemini CLI (Opzionale - per ricerca per nome)
+### Configurazione Exa AI API (Opzionale - per ricerca per nome)
 
-Per utilizzare la funzionalità di ricerca per nome naturale (`--search`), è necessario installare [Gemini CLI](https://github.com/google-gemini/gemini-cli):
+Per utilizzare la funzionalità di ricerca per nome naturale (`--search`), è necessario configurare una [API key di Exa AI](https://exa.ai):
 
 ```bash
-# Installazione globale
-npm install -g @google/gemini-cli
+# Configura la variabile d'ambiente con la tua API key
+export EXA_API_KEY='your-exa-api-key-here'
 
-# Verifica installazione
-gemini --help
+# Verifica che sia configurata
+echo $EXA_API_KEY
 ```
 
 ### Installazione da sorgenti
@@ -114,11 +114,11 @@ akoma2md -i input.xml -o output.md
 akoma2md --input input.xml --output output.md
 ```
 
-### Metodo 3: Ricerca per nome naturale (con Gemini CLI)
+### Metodo 3: Ricerca per nome naturale (con Exa AI)
 
-**⚠️ Richiede Gemini CLI installato e configurato**
+**⚠️ Richiede API key Exa AI configurata**
 
-Prima di utilizzare questa funzionalità, assicurati di aver installato e configurato [Gemini CLI](#installazione-gemini-cli-opzionale---per-ricerca-per-nome).
+Prima di utilizzare questa funzionalità, assicurati di aver configurato l'[API key di Exa AI](#configurazione-exa-ai-api-opzionale---per-ricerca-per-nome).
 
 **Importante**: Per la ricerca in linguaggio naturale devi **sempre usare il flag `-s` o `--search`**:
 
@@ -141,7 +141,7 @@ akoma2md decreto_82_2005.xml codice_amministrazione_digitale.md
 # Con percorsi assoluti
 akoma2md /percorso/documento.xml /percorso/output.md
 
-# Ricerca per nome naturale (richiede Gemini CLI - usa SEMPRE -s)
+# Ricerca per nome naturale (richiede Exa AI API - usa SEMPRE -s)
 akoma2md -s "legge stanca" legge_stanca.md
 akoma2md -s "decreto dignità" > decreto.md
 
@@ -167,7 +167,7 @@ opzioni:
   -o OUTPUT, --output OUTPUT
                         File Markdown di output
   -s SEARCH, --search SEARCH
-                        Cerca documento per nome naturale (richiede Gemini CLI)
+                        Cerca documento per nome naturale (richiede Exa AI API)
 
 argomenti posizionali:
   input                 File XML locale o URL normattiva.it
@@ -255,7 +255,7 @@ dataVigenza: 20251101
 
 - Python 3.7+
 - Nessuna dipendenza esterna per conversione XML→Markdown (solo librerie standard Python)
-- [Gemini CLI](https://github.com/google-gemini/gemini-cli) per funzionalità ricerca per nome naturale
+- [Exa AI API](https://exa.ai) per funzionalità ricerca per nome naturale
 
 ### Configurazione dell'ambiente di sviluppo
 

@@ -977,7 +977,7 @@ def process_article(article_element, markdown_content_list, ns, level=2):
 
 def lookup_normattiva_url(search_query):
     """
-    Usa Gemini CLI per cercare l'URL normattiva.it corrispondente alla query di ricerca.
+    Usa Exa AI API per cercare l'URL normattiva.it corrispondente alla query di ricerca.
 
     Args:
         search_query (str): La stringa di ricerca naturale (es. "legge stanca")
@@ -985,61 +985,68 @@ def lookup_normattiva_url(search_query):
     Returns:
         str or None: L'URL trovato, oppure None se non trovato o errore
     """
-    import subprocess
-    import re
+    import os
     import json
 
-    # Prompt semplificato per Gemini CLI
-    prompt = f"""Cerca su normattiva.it l'URL della "{search_query}" e restituisci solo l'URL completo che inizia con https://www.normattiva.it/"""
-
     try:
-        # Verifica che gemini sia disponibile
-        import shutil
-        gemini_path = shutil.which('gemini')
-        if not gemini_path:
-            print("❌ Gemini CLI non trovato nel PATH. Installalo con: npm install -g @google/gemini-cli", file=sys.stderr)
-            print("   Per istruzioni: https://github.com/google/gemini-cli", file=sys.stderr)
+        # Verifica che l'API key di Exa sia configurata
+        exa_api_key = os.getenv('EXA_API_KEY')
+        if not exa_api_key:
+            print("❌ EXA_API_KEY non trovata nelle variabili d'ambiente", file=sys.stderr)
+            print("   Configura la variabile: export EXA_API_KEY='your-api-key'", file=sys.stderr)
+            print("   Registrati su: https://exa.ai", file=sys.stderr)
             return None
 
-        # Chiama Gemini CLI con il prompt via stdin e output JSON
-        result = subprocess.run(
-            [gemini_path, '--output-format', 'json'],
-            input=prompt,
-            capture_output=True,
-            text=True,
-            timeout=60  # Aumentato il timeout per ricerche più complesse
-        )
+        # Prepara la richiesta per Exa API
+        url = "https://api.exa.ai/search"
+        headers = {
+            "x-api-key": exa_api_key,
+            "Content-Type": "application/json"
+        }
 
-        if result.returncode != 0:
-            print(f"❌ Errore Gemini CLI: {result.stderr}", file=sys.stderr)
+        # Query ottimizzata per cercare su normattiva.it
+        payload = {
+            "query": f"{search_query} site:normattiva.it",
+            "includeDomains": ["normattiva.it"],
+            "numResults": 5,
+            "type": "auto"
+        }
+
+        # Effettua la chiamata API
+        response = requests.post(url, headers=headers, json=payload, timeout=30)
+
+        if response.status_code != 200:
+            print(f"❌ Errore Exa API (HTTP {response.status_code}): {response.text}", file=sys.stderr)
             return None
 
         # Parse JSON response
         try:
-            json_response = json.loads(result.stdout.strip())
-            response_text = json_response.get('response', '').strip()
+            data = response.json()
         except json.JSONDecodeError as e:
-            print(f"❌ Errore nel parsing JSON da Gemini CLI: {e}", file=sys.stderr)
+            print(f"❌ Errore nel parsing JSON da Exa API: {e}", file=sys.stderr)
             return None
 
-        # Cerca URL normattiva.it nella risposta
-        url_pattern = r'https://www\.normattiva\.it/[^\s]+'
-        match = re.search(url_pattern, response_text)
+        # Estrai risultati
+        results = data.get('results', [])
+        if not results:
+            print(f"❌ Nessun risultato trovato per: {search_query}", file=sys.stderr)
+            return None
 
-        if match:
-            url = match.group(0)
-            # Valida che sia un URL normattiva valido
-            if is_normattiva_url(url):
+        # Prendi il primo risultato valido
+        for result in results:
+            url = result.get('url')
+            if url and is_normattiva_url(url):
+                print(f"✅ URL trovato: {url}", file=sys.stderr)
                 return url
-            else:
-                print(f"❌ URL trovato non è valido per normattiva.it: {url}", file=sys.stderr)
-                return None
-        else:
-            print(f"❌ Nessun URL normattiva.it trovato nella risposta di Gemini", file=sys.stderr)
-            return None
 
-    except subprocess.TimeoutExpired:
-        print("❌ Timeout nella chiamata a Gemini CLI", file=sys.stderr)
+        print(f"❌ Nessun URL normattiva.it valido trovato nei risultati", file=sys.stderr)
+        return None
+
+    except requests.exceptions.Timeout:
+        print("❌ Timeout nella chiamata a Exa API", file=sys.stderr)
+        return None
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Errore di connessione a Exa API: {e}", file=sys.stderr)
         return None
     except Exception as e:
         print(f"❌ Errore nella ricerca URL: {e}", file=sys.stderr)
@@ -1079,7 +1086,7 @@ def main():
     python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" --completo output.md
     python convert_akomantoso.py -c "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" output.md
 
-    # Ricerca per nome naturale (richiede Gemini CLI)
+    # Ricerca per nome naturale (richiede Exa API key)
     python convert_akomantoso.py -s "legge stanca" output.md
     python convert_akomantoso.py --search "decreto dignità" > output.md
 
