@@ -24,7 +24,7 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 - **CLI**: New command `normattiva2md --help` works correctly
 - **Conversion**: Basic XML conversion functionality verified
 
-### 🚀 Release v2.0.0: CLI Rename - Breaking Change
+### 🚀 Release v2.0.1: CLI Rename - Breaking Change (Corrected)
 
 **Major version bump**: Renamed CLI from `akoma2md` to `normattiva2md` for better discoverability
 
@@ -38,9 +38,12 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 - **Binary Names**: Release binaries now named `normattiva2md-*` instead of `akoma2md-*`
 
 #### 📦 Distribution
-- **PyPI Package**: Updated to support new CLI name
+- **PyPI Package**: Published as `akoma2md` package with `normattiva2md` CLI command
 - **GitHub Releases**: Binary releases will use new naming convention
-- **Installation**: Same installation methods, different command name
+- **Installation**: `pip install akoma2md` then use `normattiva2md` command
+
+#### 🐛 Bug Fixes
+- **Version Display**: Fixed `--version` flag to correctly show v2.0.1 instead of v1.9.0
 
 ## 2025-11-04
 
