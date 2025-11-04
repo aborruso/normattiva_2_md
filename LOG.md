@@ -24,26 +24,31 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 - **CLI**: New command `normattiva2md --help` works correctly
 - **Conversion**: Basic XML conversion functionality verified
 
-### 🚀 Release v2.0.1: CLI Rename - Breaking Change (Corrected)
+### 🚀 Release v2.0.2: Backward Compatibility - Both CLI Names Supported
 
-**Major version bump**: Renamed CLI from `akoma2md` to `normattiva2md` for better discoverability
+**Patch release**: Added backward compatibility for smooth migration
 
 #### 🆕 New Features
-- **CLI Name**: Renamed from `akoma2md` to `normattiva2md` for clearer branding
-- **Better Discoverability**: Name now clearly indicates focus on normattiva.it Italian legal documents
+- **Dual CLI Support**: Both `akoma2md` and `normattiva2md` commands now work
+- **Seamless Migration**: Existing scripts continue to work without changes
+- **Transition Period**: Users can migrate gradually to the new command name
 
-#### ⚠️ Breaking Changes
-- **CLI Command**: `akoma2md` command no longer available - use `normattiva2md` instead
-- **Migration Required**: Existing users must update scripts and workflows
-- **Binary Names**: Release binaries now named `normattiva2md-*` instead of `akoma2md-*`
+#### 🔧 Technical Changes
+- **Entry Points**: Added both command names in setup.py and pyproject.toml
+- **Same Functionality**: Both commands execute identical code
+- **Future Deprecation**: `akoma2md` command may be deprecated in future major version
 
 #### 📦 Distribution
-- **PyPI Package**: Published as `akoma2md` package with `normattiva2md` CLI command
-- **GitHub Releases**: Binary releases will use new naming convention
-- **Installation**: `pip install akoma2md` then use `normattiva2md` command
+- **PyPI Package**: `akoma2md` v2.0.2 with dual CLI support
+- **Installation**: `pip install akoma2md` provides both `akoma2md` and `normattiva2md` commands
+- **Usage**: Either command works identically
 
-#### 🐛 Bug Fixes
-- **Version Display**: Fixed `--version` flag to correctly show v2.0.1 instead of v1.9.0
+#### ✅ Migration Path
+```bash
+# Both of these work:
+akoma2md --version        # Old command (still works)
+normattiva2md --version   # New command (recommended)
+```
 
 ## 2025-11-04
 

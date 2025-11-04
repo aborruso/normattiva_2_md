@@ -16,7 +16,7 @@ def read_readme():
 
 setup(
     name="akoma2md",
-    version="2.0.1",
+    version="2.0.2",
     description="Convertitore da XML Akoma Ntoso a formato Markdown con download automatico delle leggi citate e cross-references inline (CLI: normattiva2md)",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
@@ -54,6 +54,7 @@ setup(
     # Script da riga di comando
     entry_points={
         "console_scripts": [
+            "akoma2md=convert_akomantoso:main",
             "normattiva2md=convert_akomantoso:main",
         ],
     },
