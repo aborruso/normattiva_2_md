@@ -127,3 +127,9 @@ The system SHALL provide a `--with-references` parameter that downloads and conv
 - **AND** link format SHALL be [reference text](refs/filename.md)
 - **AND** only successfully downloaded references SHALL be converted to links
 
+#### Scenario: Rate Limiting for Respectful Usage
+- **WHEN** downloading multiple cited laws in --with-references mode
+- **THEN** the system SHALL wait at least 1 second between each HTTP request to normattiva.it
+- **AND** this delay SHALL apply only to batch downloads, not to single document downloads
+- **AND** the delay SHALL not affect the overall functionality or output quality
+

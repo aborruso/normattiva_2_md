@@ -288,12 +288,17 @@ def clean_text_content(element, cross_references=None):
         elif child.tag.endswith('ref'):
             # Extract text content of <ref> tags
             ref_text = clean_text_content(child, cross_references)
+            href = child.get('href')
 
             # If cross_references is provided, try to create a markdown link
-            if cross_references:
-                href = child.get('href')
-                if href and href in cross_references:
-                    # Create markdown link: [text](relative/path.md)
+            if cross_references and href:
+                # Se href è un URI Akoma, convertilo in URL normattiva.it
+                if href.startswith('/akn/'):
+                    normattiva_url = akoma_uri_to_normattiva_url(href)
+                    if normattiva_url and normattiva_url in cross_references:
+                        ref_text = f"[{ref_text}]({cross_references[normattiva_url]})"
+                # Altrimenti, cerca direttamente nel mapping (per compatibilità)
+                elif href in cross_references:
                     ref_text = f"[{ref_text}]({cross_references[href]})"
 
             text_parts.append(ref_text)
@@ -1101,7 +1106,7 @@ def lookup_normattiva_url(search_query):
         print(f"❌ Errore nella ricerca URL: {e}", file=sys.stderr)
         return None
 
-def convert_with_references(url, quiet=False, keep_xml=False, force_complete=False):
+def convert_with_references(url, output_dir=None, quiet=False, keep_xml=False, force_complete=False):
     """
     Scarica e converte una legge con tutte le sue riferimenti, creando una struttura di cartelle.
 
@@ -1124,9 +1129,12 @@ def convert_with_references(url, quiet=False, keep_xml=False, force_complete=Fal
             print("❌ Impossibile estrarre parametri dalla legge principale", file=sys.stderr)
             return False
 
-        # Crea nome cartella basato sui parametri della legge
-        folder_name = f"{params['codiceRedaz']}_{params['dataGU']}"
-        folder_path = os.path.join(os.getcwd(), folder_name)
+        # Crea nome cartella basato sui parametri della legge o usa directory specificata
+        if output_dir:
+            folder_path = os.path.abspath(output_dir)
+        else:
+            folder_name = f"{params['codiceRedaz']}_{params['dataGU']}"
+            folder_path = os.path.join(os.getcwd(), folder_name)
 
         if not quiet:
             print(f"📁 Creazione struttura in: {folder_path}", file=sys.stderr)
@@ -1169,6 +1177,7 @@ def convert_with_references(url, quiet=False, keep_xml=False, force_complete=Fal
         # Scarica e converte leggi citate
         successful_downloads = 0
         failed_downloads = 0
+        url_to_file_mapping = {}  # Mappa URL originali ai percorsi dei file
 
         for i, cited_url in enumerate(cited_urls, 1):
             if not quiet:
@@ -1186,6 +1195,9 @@ def convert_with_references(url, quiet=False, keep_xml=False, force_complete=Fal
                 # Crea nome file per la legge citata
                 cited_filename = f"{cited_params['codiceRedaz']}_{cited_params['dataGU']}.md"
                 cited_md_path = os.path.join(refs_path, cited_filename)
+
+                # Mappa l'URL originale al percorso del file
+                url_to_file_mapping[cited_url] = f"refs/{cited_filename}"
 
                 # Scarica XML temporaneo per la legge citata
                 cited_xml_temp = os.path.join(folder_path, f"temp_{cited_params['codiceRedaz']}.xml")
@@ -1224,8 +1236,13 @@ def convert_with_references(url, quiet=False, keep_xml=False, force_complete=Fal
                 if not quiet:
                     print(f"❌ Errore elaborazione {cited_url}: {e}", file=sys.stderr)
 
-        # Costruisci mapping cross-references
-        cross_references = build_cross_references_mapping(folder_path, cited_urls, successful_downloads)
+            # Rate limiting: wait 1 second between requests to be respectful to normattiva.it
+            if not quiet:
+                print(f"⏳ Attesa 1 secondo prima del prossimo download...", file=sys.stderr)
+            time.sleep(1)
+
+        # Costruisci mapping cross-references basato sugli URL originali
+        cross_references = build_cross_references_mapping_from_urls(url_to_file_mapping)
 
         # Se abbiamo cross-references, riconverti la legge principale con i link
         if cross_references:
@@ -1358,60 +1375,17 @@ def extract_akoma_uris_from_xml(xml_file_path):
 
     return akoma_uris
 
-def build_cross_references_mapping(folder_path, cited_urls, successful_downloads):
+def build_cross_references_mapping_from_urls(url_to_file_mapping):
     """
-    Costruisce un mapping da URI Akoma a percorsi relativi dei file markdown.
+    Costruisce un mapping da URL normattiva.it a percorsi relativi dei file markdown.
 
     Args:
-        folder_path: percorso della cartella principale
-        cited_urls: lista di URL normattiva.it delle leggi citate
-        successful_downloads: numero di download riusciti
+        url_to_file_mapping: dict che mappa URL normattiva.it ai percorsi dei file
 
     Returns:
-        dict: mapping da URI Akoma a percorso relativo del file markdown
+        dict: mapping da URL normattiva.it a percorso relativo del file markdown
     """
-    cross_references = {}
-    refs_path = os.path.join(folder_path, "refs")
-
-    if successful_downloads > 0 and os.path.exists(refs_path):
-        for filename in os.listdir(refs_path):
-            if filename.endswith('.md'):
-                # Estrai parametri dal nome file (es. "400_19880823.md")
-                # Formato: codiceRedaz_dataGU.md
-                parts = filename[:-3].split('_')  # Rimuovi .md e splitta
-                if len(parts) == 2:
-                    codice_redaz = parts[0]
-                    data_gu = parts[1]
-
-                    # Costruisci possibili URI Akoma basati sui parametri
-                    try:
-                        year = data_gu[:4]
-                        month = data_gu[4:6]
-                        day = data_gu[6:8]
-                        date_iso = f"{year}-{month}-{day}"
-
-                        relative_path = f"refs/{filename}"
-
-                        # URI principali per diversi tipi di atto
-                        uris_to_try = [
-                            f"/akn/it/act/legge/stato/{date_iso}/{codice_redaz}/!main",
-                            f"/akn/it/act/legge/stato/{date_iso}/{codice_redaz}",
-                            f"/akn/it/act/decreto-legge/stato/{date_iso}/{codice_redaz}/!main",
-                            f"/akn/it/act/decreto-legge/stato/{date_iso}/{codice_redaz}",
-                            f"/akn/it/act/decretoLegislativo/stato/{date_iso}/{codice_redaz}/!main",
-                            f"/akn/it/act/decretoLegislativo/stato/{date_iso}/{codice_redaz}",
-                            f"/akn/it/act/costituzione/stato/{date_iso}/const/!main",
-                            f"/akn/it/act/costituzione/stato/{date_iso}/const",
-                        ]
-
-                        # Aggiungi tutti i possibili URI al mapping
-                        for uri in uris_to_try:
-                            cross_references[uri] = relative_path
-
-                    except:
-                        pass
-
-    return cross_references
+    return url_to_file_mapping
 
 def create_index_file(folder_path, main_params, cited_urls, successful, failed):
     """
@@ -1529,8 +1503,9 @@ def main():
         if not is_normattiva_url(input_source):
             print("❌ --with-references può essere usato solo con URL normattiva.it", file=sys.stderr)
             sys.exit(1)
-        if output_file:
-            print("❌ --with-references non supporta output file singolo, crea una struttura di cartelle", file=sys.stderr)
+        if output_file and not os.path.isdir(output_file) and os.path.exists(output_file):
+            print("❌ --with-references richiede un nome di directory (non un file esistente)", file=sys.stderr)
+            print("💡 Esempio: akoma2md --with-references <url> [nome_cartella]", file=sys.stderr)
             sys.exit(1)
 
     # Sanitize output path if provided
@@ -1570,7 +1545,7 @@ def main():
 
         # Handle --with-references mode
         if with_references:
-            success = convert_with_references(input_source, args.quiet, args.keep_xml, args.completo)
+            success = convert_with_references(input_source, output_file, args.quiet, args.keep_xml, args.completo)
             if success:
                 sys.exit(0)
             else:

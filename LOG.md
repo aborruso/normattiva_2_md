@@ -4,6 +4,31 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-04
 
+### 🚀 Release v1.9.3: Rate Limiting for Respectful Usage
+
+**New feature**: Added 1-second delay between HTTP requests in --with-references mode to respect server usage limits
+
+#### ✨ New Feature: Rate Limiting
+
+- **Rate limiting implemented**: 1-second delay between each download in --with-references batch mode
+- **Respectful usage**: Prevents overwhelming normattiva.it servers during bulk downloads
+- **No impact on functionality**: Delay only applies to batch downloads, not single document requests
+- **Implementation**: Added time.sleep(1) in the download loop with import time
+
+#### 🔧 Technical Details
+
+- **Code changes**: Added import time, modified convert_with_references() loop
+- **OpenSpec completed**: Proposal archived as implemented
+- **Testing**: All existing tests pass (27/27), rate limiting verified
+
+#### 📦 Ready for Release
+
+- **Version**: 1.9.3 ready for PyPI and GitHub Releases
+- **Backward compatibility**: Maintained, no breaking changes
+- **Quality**: OpenSpec proposal completed, code reviewed
+
+## 2025-11-04
+
 ### 🚀 Release v1.9.2: Fix Critico Cross-References
 
 **Release correttiva urgente**: Risoluzione completa problema collegamenti incrociati
