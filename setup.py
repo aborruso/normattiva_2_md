@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Setup script per akoma2md - Convertitore Akoma Ntoso to Markdown
+Setup script per normattiva2md - Convertitore Akoma Ntoso to Markdown
 """
 
 from setuptools import setup, find_packages
@@ -17,7 +17,7 @@ def read_readme():
 setup(
     name="akoma2md",
     version="2.0.0",
-    description="Convertitore da XML Akoma Ntoso a formato Markdown con download automatico delle leggi citate e cross-references inline",
+    description="Convertitore da XML Akoma Ntoso a formato Markdown con download automatico delle leggi citate e cross-references inline (CLI: normattiva2md)",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
     author="Andrea Borruso",
