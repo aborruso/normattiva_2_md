@@ -24,6 +24,25 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 - **CLI**: New command `normattiva2md --help` works correctly
 - **Conversion**: Basic XML conversion functionality verified
 
+### 📦 Release v2.0.3: README Update on PyPI
+
+**Metadata-only release**: Refresh PyPI package metadata
+
+#### 🔧 Changes
+- **PyPI Badge Fix**: Corrected README badge to point to `akoma2md` package on PyPI
+- **Metadata Refresh**: Updated package description and README on PyPI
+- **No Functional Changes**: Same dual CLI functionality as v2.0.2
+
+#### 📦 Distribution
+- **PyPI Package**: `akoma2md` v2.0.3 with corrected metadata
+- **GitHub Release**: v2.0.3 tag for consistency
+
+#### ✅ Verification
+The README on PyPI now correctly shows:
+- PyPI badge pointing to `akoma2md` package
+- Installation instructions for `akoma2md` package
+- Both `normattiva2md` and `akoma2md` CLI commands documented
+
 ### 🚀 Release v2.0.2: Backward Compatibility - Both CLI Names Supported
 
 **Patch release**: Added backward compatibility for smooth migration
