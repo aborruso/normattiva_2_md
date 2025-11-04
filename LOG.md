@@ -4,6 +4,67 @@ Questo file documenta gli avanzamenti significativi e le decisioni chiave del pr
 
 ## 2025-11-04
 
+### 🚀 Release v1.9.2: Fix Critico Cross-References
+
+**Release correttiva urgente**: Risoluzione completa problema collegamenti incrociati
+
+#### 🐛 Fix Critico Cross-References
+- **Problema**: La funzionalità `--with-references` non generava collegamenti cliccabili alle leggi citate
+- **Sintomi**: Log mostrava "64 riferimenti aggiunti" ma nessun link nel documento Markdown
+- **Causa radice**: Mapping URI Akoma → percorsi file non funzionante per discrepanze codici redazionali
+- **Soluzione**: Nuovo sistema di mapping diretto URL normattiva.it → percorsi file locali
+
+#### 🔧 Implementazione Tecnica
+- **Mapping rivisto**: Da URI Akoma complessi a mapping diretto URL→file path
+- **Conversione dinamica**: URI Akoma convertiti in URL normattiva.it al momento del linking
+- **Supporto directory**: `--with-references` ora accetta nomi directory personalizzati
+- **Robustezza**: Eliminata dipendenza da codici redazionali inconsistenti
+
+#### ✅ Validazione Completa
+- **Test end-to-end**: Verificati collegamenti funzionanti in documenti reali
+- **Esempi funzionanti**: `[legge 1912/555](refs/012U0555_19120630.md)` ora cliccabili
+- **Suite test**: 27/27 test passando senza regressioni
+- **Compatibilità**: Mantenuta retrocompatibilità completa
+
+#### 📦 Distribuzione
+- **Versione**: 1.9.2 con fix critico applicato
+- **Urgenza**: Release correttiva per funzionalità chiave
+- **Qualità**: Test completi, documentazione aggiornata
+
+## 2025-11-04
+
+### 🚀 Release v1.9.1: Fix Cross-References e Aggiornamento Roadmap
+
+**Correzioni critiche e consolidamento**: Fix funzionalità cross-references e aggiornamento documentazione
+
+#### 🐛 Fix Cross-References
+- **Problema risolto**: I collegamenti alle leggi citate non venivano generati correttamente
+- **Causa**: Mapping URI Akoma non corrispondeva ai codici redazionali dei file scaricati
+- **Soluzione**: Nuovo approccio che mappa direttamente URL normattiva.it ai percorsi file
+- **Risultato**: Collegamenti funzionanti come `[legge 1912/555](refs/012U0555_19120630.md)`
+
+#### 📝 Aggiornamenti Documentazione
+- **ROADMAP.md aggiornato**: Riflette versione corrente 1.9.0 e funzionalità completate
+- **Stato versioni**: Allineamento tra documentazione e codice effettivo
+- **Cronologia releases**: Documentate versioni v1.5.0-v1.9.0 con funzionalità implementate
+
+#### 🔧 Miglioramenti Tecnici
+- **Supporto directory personalizzate**: `--with-references` ora accetta nomi directory specifici
+- **Mapping URL diretto**: Eliminata complessità mapping URI Akoma→file path
+- **Conversione URI robusta**: Funzione `akoma_uri_to_normattiva_url()` per conversioni accurate
+
+#### 🧪 Testing e Validazione
+- **Test end-to-end**: Verificata generazione collegamenti incrociati funzionanti
+- **Suite test completa**: 27/27 test passando senza regressioni
+- **Funzionalità operative**: Cross-references, download leggi citate, ricerca Exa tutte funzionanti
+
+#### 📦 Distribuzione
+- **Versione**: 1.9.1 pronta per PyPI e GitHub Releases
+- **Compatibilità**: Mantenuta completa retrocompatibilità
+- **Qualità**: Fix critici implementati, documentazione allineata
+
+## 2025-11-04
+
 ### 🚀 Release v1.9.0: Cross-References Inline nei Documenti Markdown
 
 **Nuova funzionalità**: Collegamenti cliccabili automatici nei documenti Markdown quando si usa `--with-references`
