@@ -34,18 +34,21 @@ Convertire le norme legali da XML Akoma Ntoso a Markdown offre vantaggi signific
 
 ### Installazione da PyPI (Raccomandato)
 
-Il pacchetto è pubblicato su [PyPI](https://pypi.org/project/normattiva2md/).
+Il pacchetto è pubblicato su [PyPI](https://pypi.org/project/akoma2md/) come `akoma2md`.
 
 ```bash
 # Con uv
-uv tool install normattiva2md
+uv tool install akoma2md
 
 # Con pip
-pip install normattiva2md
+pip install akoma2md
 
-# Utilizzo
-normattiva2md input.xml output.md
+# Utilizzo (entrambi i comandi funzionano)
+normattiva2md input.xml output.md  # Nuovo comando raccomandato
+akoma2md input.xml output.md       # Vecchio comando (compatibilità)
 ```
+
+> **💡 Nota sulla compatibilità**: Entrambi i comandi `normattiva2md` e `akoma2md` funzionano identicamente. Il nuovo nome `normattiva2md` è raccomandato per chiarezza, ma il vecchio comando rimane disponibile per compatibilità durante la transizione.
 
 ### Configurazione Exa AI API (Opzionale - per ricerca per nome)
 
@@ -83,7 +86,8 @@ echo $EXA_API_KEY
 git clone https://github.com/aborruso/normattiva_2_md.git
 cd normattiva_2_md
 pip install -e .
-normattiva2md input.xml output.md
+normattiva2md input.xml output.md  # Nuovo comando raccomandato
+# Oppure: akoma2md input.xml output.md  # Vecchio comando (compatibilità)
 ```
 
 ### Esecuzione diretta (senza installazione)
