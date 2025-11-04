@@ -2,7 +2,28 @@
 
 Punti da attenzionare per le prossime release, basati su code review approfondita.
 
-## 🟡 HIGH PRIORITY - v1.5.0 (Prossima Release)
+## ✅ COMPLETED - v1.5.0 to v1.9.0 (2025 Releases)
+
+### Versioni Rilasciate
+- **v1.9.0** (2025-11-04): Cross-references inline nei documenti Markdown
+- **v1.8.0** (2025-11-04): Download automatico leggi citate con `--with-references`
+- **v1.7.0** (2025-11-03): Ricerca AI con Exa API (sostituzione Gemini)
+- **v1.6.0** (2025-11-03): Supporto URL articolo-specifici e flag `--completo`
+- **v1.5.0** (2025-11-02): Ricerca naturale documenti legali
+
+### Funzionalità Implementate
+- ✅ Cross-references inline con mapping URI Akoma→file path
+- ✅ Download automatico leggi citate in struttura organizzata
+- ✅ Ricerca AI con Exa API per lookup naturale documenti
+- ✅ Supporto URL articolo-specifici (~art3, ~art16bis, etc.)
+- ✅ Flag --completo per override download legge completa
+- ✅ Miglioramento messaggi errore e UX CLI
+- ✅ Caricamento automatico API key da .env
+- ✅ Gestione graceful BrokenPipeError e KeyboardInterrupt
+
+---
+
+## 🟡 NEXT RELEASE - v1.10.0 (Prossima Release)
 
 ### 1. Refactoring `main()` function
 
@@ -572,5 +593,5 @@ akoma2md/
 
 ---
 
-**Ultimo aggiornamento**: 2025-01-11
-**Versione corrente**: v1.4.2
+**Ultimo aggiornamento**: 2025-11-04
+**Versione corrente**: v1.9.0
