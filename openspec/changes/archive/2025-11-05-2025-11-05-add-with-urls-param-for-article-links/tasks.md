@@ -1,0 +1,5 @@
+- Analizzare come estrarre da XML le citazioni di legge e articolo
+- Implementare la generazione dell’URL secondo docs/URL_NORMATTIVA.md
+- Aggiungere parametro opzionale with_urls alla conversione
+- Testare la generazione dei link markdown
+- Aggiornare la documentazione e gli esempi

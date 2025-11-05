@@ -645,7 +645,7 @@ def convert_akomantoso_to_markdown_improved(xml_file_path, markdown_file_path=No
                 else:
                     normattiva_url = None
                 if normattiva_url:
-                    cross_references[href] = normattiva_url
+                    cross_references[normattiva_url] = normattiva_url
         
         # Check file size before parsing (XML bomb protection)
         file_size = os.path.getsize(xml_file_path)
@@ -1518,10 +1518,12 @@ def akoma_uri_to_normattiva_url(akoma_uri):
             # Gestisci tipi diversi
             if tipo == 'legge':
                 urn = f"urn:nir:stato:legge:{data.replace('-', '-')};{numero}"
-            elif tipo == 'decreto-legge':
+            elif tipo in ('decreto-legge', 'decretoLegge'):
                 urn = f"urn:nir:stato:decreto-legge:{data.replace('-', '-')};{numero}"
             elif tipo == 'decretoLegislativo':
                 urn = f"urn:nir:stato:decreto.legislativo:{data.replace('-', '-')};{numero}"
+            elif tipo == 'decretoDelPresidenteDellaRepubblica':
+                urn = f"urn:nir:stato:decreto.del.presidente.della.repubblica:{data.replace('-', '-')};{numero}"
             elif tipo == 'costituzione':
                 urn = f"urn:nir:stato:costituzione:{data.replace('-', '-')}"
             else:
@@ -1804,7 +1806,7 @@ def main():
             # Note that complete conversion was forced
             metadata['article'] = parse_article_reference(input_source)  # Include original article ref for reference
 
-        success = convert_akomantoso_to_markdown_improved(xml_temp_path, output_file, metadata, article_ref)
+        success = convert_akomantoso_to_markdown_improved(xml_temp_path, output_file, metadata, article_ref, with_urls=args.with_urls)
 
         if success:
             if not quiet_mode:
