@@ -83,7 +83,7 @@ echo $EXA_API_KEY
 
 ```bash
 # Passa l'API key direttamente come parametro
-normattiva2md -s "legge stanca" --exa-api-key "your-exa-api-key" output.md
+normattiva2md -s "legge stanca accessibilità" --exa-api-key "your-exa-api-key" output.md
 ```
 
 ### Installazione da sorgenti
@@ -152,16 +152,16 @@ Prima di utilizzare questa funzionalità, assicurati di aver configurato l'[API 
 
 ```bash
 # Ricerca automatica (seleziona automaticamente il miglior risultato)
-normattiva2md -s "legge stanca" output.md
+normattiva2md -s "legge stanca accessibilità" output.md
 normattiva2md --search "decreto dignità" --exa-api-key "your-key" > decreto.md
 
 # Output su stdout
 normattiva2md -s "codice della strada"
-normattiva2md -s "legge stanca" --exa-api-key "your-key" > legge_stanca.md
+normattiva2md -s "legge stanca accessibilità" --exa-api-key "your-key" > legge_stanca.md
 
 # Modalità debug interattiva (--debug-search)
 # Ti permette di vedere tutti i risultati e scegliere manualmente
-normattiva2md -s "legge stanca" --debug-search
+normattiva2md -s "legge stanca accessibilità" --debug-search
 ```
 
 #### 🔍 Modalità Debug Interattiva
@@ -169,7 +169,7 @@ normattiva2md -s "legge stanca" --debug-search
 La modalità `--debug-search` ti mostra tutti i risultati trovati e ti permette di scegliere manualmente quello desiderato:
 
 ```bash
-normattiva2md -s "legge stanca" --debug-search
+normattiva2md -s "legge stanca accessibilità" --debug-search
 ```
 
 **Cosa succede:**
@@ -184,7 +184,7 @@ normattiva2md -s "legge stanca" --debug-search
 **Esempio di sessione interattiva:**
 
 ```bash
-$ normattiva2md -s "legge stanca" --debug-search
+$ normattiva2md -s "legge stanca accessibilità" --debug-search
 
 🔍 Risultati trovati per: legge stanca
 Seleziona il numero del risultato desiderato (1-5), o 0 per annullare:
@@ -227,7 +227,7 @@ normattiva2md decreto_82_2005.xml codice_amministrazione_digitale.md
 normattiva2md /percorso/documento.xml /percorso/output.md
 
 # Ricerca in linguaggio naturale (richiede Exa AI API - usa SEMPRE -s)
-normattiva2md -s "legge stanca" legge_stanca.md
+normattiva2md -s "legge stanca accessibilità" legge_stanca.md
 normattiva2md -s "decreto dignità" > decreto.md
 
 # Visualizzare l'aiuto
