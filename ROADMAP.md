@@ -399,6 +399,137 @@ pip install akoma2md[all]    # tutto
 
 ---
 
+## 🟢 PLANNED - EUR-Lex Integration (v2.3.0)
+
+### EUR-Lex XHTML to Markdown Converter
+
+**Status**: 🎯 Ready for implementation - Analysis completed
+
+**Background**: 
+- EUR-Lex API esplorata e documentata (`docs/EURLEX_API.md`, `docs/EUR-LEX_INTEGRATION.md`)
+- Script download funzionante (`scripts/download_eurlex.py`)
+- Analisi conversione completata (`docs/EURLEX_CONVERSION_ANALYSIS.md`)
+- Test tool comparativi: html2text vince (qualità ⭐⭐⭐⭐⭐)
+
+**Obiettivo**: CLI tool per convertire legislazione EU da EUR-Lex a Markdown
+
+**Architettura**:
+
+```bash
+# Opzione 1: Tool separato (CONSIGLIATO)
+eurlex2md 32024L1385 --lang IT --output direttiva.md
+
+# Opzione 2: Integrato in normattiva2md
+normattiva2md --source eurlex 32024L1385 --lang IT
+```
+
+**Workflow Interno**:
+1. Download XML Notice (metadati + URL disponibili)
+2. Mappatura codice lingua (IT → ITA, EN → ENG)
+3. Download XHTML da publications.europa.eu
+4. Conversione XHTML → Markdown con html2text
+5. Post-processing (metadata, cleanup)
+
+**Dependencies**:
+```python
+html2text>=2024.2.26  # Conversione XHTML → MD
+```
+
+**Implementation Steps**:
+
+1. **CLI Wrapper** (~100 linee)
+   ```python
+   # eurlex2md.py (nuovo file)
+   def main():
+       parser = argparse.ArgumentParser(description='Convert EUR-Lex documents to Markdown')
+       parser.add_argument('celex', help='CELEX number (e.g., 32024L1385)')
+       parser.add_argument('--lang', default='EN', help='Language code (IT, EN, FR, DE, ES)')
+       parser.add_argument('--output', help='Output markdown file')
+       parser.add_argument('--keep-xhtml', action='store_true', help='Keep intermediate XHTML')
+       parser.add_argument('--quiet', action='store_true', help='Suppress progress messages')
+   ```
+
+2. **Integrazione html2text** (~50 linee)
+   ```python
+   import html2text
+   
+   def convert_xhtml_to_markdown(xhtml_file, output_file):
+       h = html2text.HTML2Text()
+       h.ignore_tables = True
+       h.ignore_images = True
+       h.unicode_snob = True
+       h.body_width = 0  # No line wrapping
+       
+       with open(xhtml_file, 'r', encoding='utf-8') as f:
+           html = f.read()
+       
+       markdown = h.handle(html)
+       
+       with open(output_file, 'w', encoding='utf-8') as f:
+           f.write(markdown)
+   ```
+
+3. **Riuso download_eurlex.py** (~30 linee refactoring)
+   - Estrarre funzioni riutilizzabili
+   - Supporto library mode (oltre CLI)
+   - Return paths ai file scaricati
+
+4. **Tests** (~150 linee)
+   ```python
+   # tests/test_eurlex.py
+   class TestEURLexConversion(unittest.TestCase):
+       def test_celex_validation(self):
+           """Test CELEX number format validation"""
+       
+       def test_language_mapping(self):
+           """Test IT → ITA, EN → ENG mapping"""
+       
+       def test_xhtml_to_markdown(self):
+           """Test XHTML conversion with test_data/eurlex_sample_it.xhtml"""
+       
+       def test_full_workflow(self):
+           """Test complete CELEX → Markdown flow"""
+   ```
+
+5. **Documentation** (~200 linee)
+   ```markdown
+   # docs/EURLEX_USAGE.md
+   - Installation
+   - Basic usage
+   - Language codes reference
+   - Examples
+   - Troubleshooting
+   ```
+
+**Benefici**:
+✅ Complementare a Normattiva (UE + IT)
+✅ Workflow già validato e testato
+✅ Nessun parser XML custom (usa html2text)
+✅ 80% codice già implementato
+✅ API EUR-Lex gratuita e stabile
+
+**Timeline**: 2-3 ore sviluppo + 1 ora testing
+
+**Files da creare**:
+- `eurlex2md.py` (nuovo CLI tool)
+- `tests/test_eurlex.py` (test suite)
+- `docs/EURLEX_USAGE.md` (user guide)
+
+**Files da modificare**:
+- `scripts/download_eurlex.py` (refactor per library mode)
+- `setup.py` (aggiungere entry point `eurlex2md`)
+- `README.md` (aggiungere sezione EUR-Lex)
+
+**Deliverables**:
+```bash
+# CLI usage
+eurlex2md 32024L1385 --lang IT -o direttiva-violenza-donne.md
+eurlex2md 32016R0679 --lang EN -o gdpr.md  # GDPR in inglese
+eurlex2md --list-languages  # Show all 24 EU languages
+```
+
+---
+
 ## 🔵 LOW PRIORITY - Future (v2.0.0)
 
 ### 12. Configuration File Support

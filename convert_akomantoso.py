@@ -18,7 +18,7 @@ ALLOWED_DOMAINS = ['www.normattiva.it', 'normattiva.it']
 MAX_FILE_SIZE_MB = 50
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 DEFAULT_TIMEOUT = 30
-VERSION = '2.0.10'
+VERSION = '2.0.12'
 
 def load_env_file():
     """
@@ -1624,49 +1624,52 @@ def main():
     Funzione principale che gestisce gli argomenti della riga di comando
     Supporta sia file XML locali che URL normattiva.it
     """
+    cmd = os.path.basename(sys.argv[0]) or "normattiva2md"
+    cmd_display = cmd if not cmd.endswith(".py") else "normattiva2md"
     parser = argparse.ArgumentParser(
         description='Converte documenti Akoma Ntoso in formato Markdown da file XML o URL normattiva.it',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+        prog=cmd_display,
+        epilog=f"""
   Esempi d'uso:
 
     # Output a file
-    python convert_akomantoso.py input.xml output.md
-    python convert_akomantoso.py -i input.xml -o output.md
+    {cmd_display} input.xml output.md
+    {cmd_display} -i input.xml -o output.md
 
     # Output a stdout (default se -o omesso)
-    python convert_akomantoso.py input.xml
-    python convert_akomantoso.py input.xml > output.md
-    python convert_akomantoso.py -i input.xml
+    {cmd_display} input.xml
+    {cmd_display} input.xml > output.md
+    {cmd_display} -i input.xml
 
     # Da URL normattiva.it (auto-detect)
-    python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
-    python convert_akomantoso.py "https://www.normattiva.it/esporta/attoCompleto?atto.dataPubblicazioneGazzetta=2018-07-13&atto.codiceRedazionale=18G00112" output.md
-    python convert_akomantoso.py "URL" > output.md
-    python convert_akomantoso.py -i "URL" -o output.md
+    {cmd_display} "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
+    {cmd_display} "https://www.normattiva.it/esporta/attoCompleto?atto.dataPubblicazioneGazzetta=2018-07-13&atto.codiceRedazionale=18G00112" output.md
+    {cmd_display} "URL" > output.md
+    {cmd_display} -i "URL" -o output.md
 
     # Da URL normattiva.it con articolo specifico
-    python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" output.md
-    python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" output.md
+    {cmd_display} "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" output.md
+    {cmd_display} "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" output.md
 
     # Forza conversione completa anche con URL articolo-specifico
-    python convert_akomantoso.py "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" --completo output.md
-    python convert_akomantoso.py -c "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" output.md
+    {cmd_display} "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:2018-07-12;87~art3" --completo output.md
+    {cmd_display} -c "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53~art16bis" output.md
 
     # Ricerca in linguaggio naturale (richiede Exa API key)
-    python convert_akomantoso.py -s "legge stanca" output.md
-    python convert_akomantoso.py --search "decreto dignità" > output.md
+    {cmd_display} -s "legge stanca" output.md
+    {cmd_display} --search "decreto dignità" > output.md
 
     # Mantenere XML scaricato da URL
-    python convert_akomantoso.py "URL" output.md --keep-xml
-    python convert_akomantoso.py "URL" --keep-xml > output.md
+    {cmd_display} "URL" output.md --keep-xml
+    {cmd_display} "URL" --keep-xml > output.md
 
      # Scaricare anche tutte le leggi citate
-     python convert_akomantoso.py --with-references "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2005-03-07;82" output.md
+     {cmd_display} --with-references "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2005-03-07;82" output.md
 
      # Generare link markdown agli articoli citati su normattiva.it
-     python convert_akomantoso.py --with-urls "input.xml" output.md
-     python convert_akomantoso.py --with-urls "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
+     {cmd_display} --with-urls "input.xml" output.md
+     {cmd_display} --with-urls "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022;53" output.md
             """
     )
 
@@ -1712,9 +1715,9 @@ def main():
     # Valida che almeno input o search sia specificato
     if not input_source and not search_query:
         parser.error("Input richiesto.\n"
-                    "Uso: python convert_akomantoso.py <input> [output.md]\n"
-                    "oppure: python convert_akomantoso.py -i <input> [-o output.md]\n"
-                    "oppure: python convert_akomantoso.py -s <query> [-o output.md]\n"
+                    f"Uso: {cmd_display} <input> [output.md]\n"
+                    f"oppure: {cmd_display} -i <input> [-o output.md]\n"
+                    f"oppure: {cmd_display} -s <query> [-o output.md]\n"
                     "Se output omesso, markdown va a stdout")
 
     # Validate --with-references parameter
