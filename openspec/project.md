@@ -1,7 +1,7 @@
 # Project Context
 
 ## Purpose
-Akoma2MD is a command-line tool that converts Akoma Ntoso XML documents (particularly Italian legal documents from normattiva.it) into readable Markdown format. The primary goal is to provide legal documents in a format optimized for Large Language Models (LLMs) and AI applications, enabling better legal analysis, Q&A systems, and automated processing.
+Normattiva2MD (formerly Akoma2MD) is a command-line tool that converts Akoma Ntoso XML documents (particularly Italian legal documents from normattiva.it) into readable Markdown format. The primary goal is to provide legal documents in a format optimized for Large Language Models (LLMs) and AI applications, enabling better legal analysis, Q&A systems, and automated processing.
 
 ## Tech Stack
 - **Language**: Python 3.7+
@@ -11,6 +11,7 @@ Akoma2MD is a command-line tool that converts Akoma Ntoso XML documents (particu
 - **Testing**: unittest (standard library)
 - **CI/CD**: GitHub Actions
 - **Dependencies**: requests>=2.25.0 (only external dependency)
+- **External APIs**: Exa AI API for natural language document search
 
 ## Project Conventions
 
@@ -24,6 +25,7 @@ Akoma2MD is a command-line tool that converts Akoma Ntoso XML documents (particu
 - **Dependencies**: Keep minimal; only add to setup.py/pyproject.toml if essential
 - **Regex/XPath**: Comment non-obvious patterns inline
 - **CLI args**: Use argparse, support both positional and named flags
+- **Dual CLI support**: Maintain both `akoma2md` (legacy) and `normattiva2md` (preferred) commands
 
 ### Architecture Patterns
 - **CLI-first design**: Native command-line interface with flexible argument parsing
@@ -31,6 +33,8 @@ Akoma2MD is a command-line tool that converts Akoma Ntoso XML documents (particu
 - **Streaming processing**: Handle large XML documents efficiently
 - **Hierarchical structure preservation**: Maintain legal document organization (chapters, articles, paragraphs)
 - **URL-aware processing**: Automatic detection and downloading of normattiva.it URLs
+- **AI-powered search**: Natural language lookup using Exa AI API for document discovery
+- **Cross-reference system**: Automatic download and linking of cited legal documents
 
 ### Testing Strategy
 - **Unit tests**: unittest framework for core conversion functions
@@ -52,6 +56,8 @@ Akoma2MD is a command-line tool that converts Akoma Ntoso XML documents (particu
 - **Document structures**: Laws, decrees, regulations with hierarchical organization (preamble, chapters, articles, paragraphs)
 - **Legal amendments**: Special handling of text modifications with ((double parentheses)) notation
 - **Markdown optimization**: Format designed for LLM consumption, maintaining readability for both humans and AI systems
+- **Metadata extraction**: YAML front matter with document metadata (dates, URLs, references)
+- **Entry-into-force tracking**: Automatic extraction of law effectiveness dates from XML notes
 
 ## Important Constraints
 - **Python compatibility**: Must work on Python 3.7+ (no modern features like type hints)
@@ -62,5 +68,6 @@ Akoma2MD is a command-line tool that converts Akoma Ntoso XML documents (particu
 
 ## External Dependencies
 - **normattiva.it**: Italian official legal document repository for URL-based document fetching
+- **Exa AI**: Search API for natural language document discovery
 - **PyPI**: Package distribution and installation
 - **GitHub**: Repository hosting, issue tracking, and CI/CD pipelines

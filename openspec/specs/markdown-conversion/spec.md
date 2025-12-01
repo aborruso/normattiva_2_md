@@ -1,7 +1,7 @@
 # markdown-conversion Specification
 
 ## Purpose
-TBD - created by archiving change adjust-heading-hierarchy-and-add-frontmatter. Update Purpose after archive.
+Convert XML Akoma Ntoso legal documents from normattiva.it to structured Markdown format optimized for LLM consumption and legal analysis.
 ## Requirements
 ### Requirement: Structured Heading Hierarchy
 The system SHALL generate Markdown with a consistent heading hierarchy where the law title uses H1, and all other structural elements (chapters, sections, articles) use progressively lower heading levels.
@@ -132,4 +132,24 @@ The system SHALL provide a `--with-references` parameter that downloads and conv
 - **THEN** the system SHALL wait at least 1 second between each HTTP request to normattiva.it
 - **AND** this delay SHALL apply only to batch downloads, not to single document downloads
 - **AND** the delay SHALL not affect the overall functionality or output quality
+
+### Requirement: Entry-Into-Force Date in Front Matter
+The system SHALL extract and include entry-into-force date (`dataEntrataInVigore`) in YAML front matter when available in the source XML.
+
+#### Scenario: Entry-Into-Force Date Extraction
+- **WHEN** processing XML with entry-into-force information in preface authorialNote
+- **THEN** system SHALL parse text starting with "Entrata in vigore"
+- **AND** extract date in formats d/m/yyyy, dd/mm/yyyy, or yyyy-mm-dd
+- **AND** normalize to YYYYMMDD format
+- **AND** include as `dataEntrataInVigore` field in front matter
+
+#### Scenario: Missing Entry-Into-Force Date
+- **WHEN** no entry-into-force information is found in XML
+- **THEN** system SHALL omit `dataEntrataInVigore` field from front matter
+- **AND** continue processing without error
+
+#### Scenario: Date Format Normalization
+- **WHEN** extracting entry-into-force dates
+- **THEN** system SHALL accept multiple date formats (d/m/yyyy, dd/mm/yyyy, yyyy-mm-dd)
+- **AND** normalize all to YYYYMMDD format consistent with other metadata fields
 
