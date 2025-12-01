@@ -40,3 +40,25 @@ dist/
 
 # Virtual environment
 venv/
+
+# pytest cache
+.pytest_cache/
+
+# ruff cache
+.ruff_cache/
+
+# Coverage reports
+.coverage
+htmlcov/
+
+# mypy cache
+.mypy_cache/
+
+# tox
+.tox/
+
+# Node modules (for .opencode)
+node_modules/
+
+# Virtual environments (already have venv/, but add .venv/)
+.venv/
