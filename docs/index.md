@@ -459,10 +459,10 @@ normattiva2md "URL" output.md --with-references</code></pre>
             </div>
             <h2 class="text-3xl font-bold text-gray-900 mb-4">Possibile grazie a Normattiva</h2>
             <p class="text-lg text-gray-600 mb-6 leading-relaxed">
-                Questo progetto si basa sul servizio gratuito e affidabile di <strong>Normattiva</strong>, che rende disponibili le norme italiane in formato XML strutturato (Akoma Ntoso). Senza questo lavoro di eccellenza e innovazione tecnologica nella pubblica amministrazione, normattiva2md non sarebbe stato possibile.
+                Questo progetto si basa sul servizio di <strong>Normattiva</strong>, che rende disponibili le norme italiane in formato XML strutturato (Akoma Ntoso). Senza questo normattiva2md non sarebbe stato possibile.
             </p>
             <p class="text-gray-600 mb-6">
-                Normattiva impiega tecnologie informatiche innovative per l'erogazione di un servizio completo di informazione sulle leggi italiane, garantendo accessibilità e trasparenza normativa per tutti i cittadini.
+                Normattiva eroga un servizio completo di informazione sulle leggi italiane, garantendo accessibilità e trasparenza normativa per tutte le persone.
             </p>
             <a href="https://www.normattiva.it/" target="_blank" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold transition">
                 <span>Visita Normattiva.it</span>
