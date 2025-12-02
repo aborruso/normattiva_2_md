@@ -11,7 +11,7 @@ title: Home
                 Converti le leggi italiane in Markdown AI-ready
             </h1>
             <p class="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
-                Trasforma i testi delle leggi italiane in formato leggibile e pronto per l'uso con intelligenze artificiali
+                Trasforma i contenuti di normattiva.it in testo semplice e strutturato per le intelligenze artificiali
             </p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
                 <a href="#installation" class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">
