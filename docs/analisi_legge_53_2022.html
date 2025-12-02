@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisi Dataset - Legge 53/2022 Statistiche Violenza di Genere</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 20px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .header .ref {
+            font-size: 0.9em;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .overview {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 40px;
+        }
+
+        .overview h2 {
+            margin-bottom: 15px;
+            font-size: 1.8em;
+        }
+
+        .overview p {
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .enti-section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .ente-card {
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        .ente-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+
+        .ente-card h3 {
+            color: #667eea;
+            font-size: 1.6em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .ente-card h3:hover {
+            color: #764ba2;
+        }
+
+        .ente-card h3::before {
+            content: "📊";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .ente-card h3::after {
+            content: "🔗";
+            opacity: 0;
+            margin-left: 10px;
+            font-size: 0.7em;
+            transition: opacity 0.2s ease;
+        }
+
+        .ente-card h3:hover::after {
+            opacity: 0.5;
+        }
+
+        .ente-card .descrizione {
+            background: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #667eea;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .dataset-box {
+            margin-top: 20px;
+        }
+
+        .dataset-title {
+            font-weight: 600;
+            color: #764ba2;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            position: relative;
+            display: inline-block;
+        }
+
+        .dataset-title:hover {
+            color: #667eea;
+        }
+
+        .dataset-title::after {
+            content: "🔗";
+            opacity: 0;
+            margin-left: 8px;
+            font-size: 0.85em;
+            transition: opacity 0.2s ease;
+        }
+
+        .dataset-title:hover::after {
+            opacity: 0.6;
+        }
+
+        .schema-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95em;
+        }
+
+        .schema-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .schema-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e1e8ed;
+        }
+
+        .schema-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .schema-table tr:hover {
+            background: #f0f3ff;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .badge-triennale {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-semestrale {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .badge-12mesi {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .badge-6mesi {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .timeline {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 40px;
+            border: 2px solid #e1e8ed;
+        }
+
+        .timeline h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: #764ba2;
+            min-width: 150px;
+        }
+
+        .reati-list {
+            background: #fff8e1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .reati-list h4 {
+            color: #f57c00;
+            margin-bottom: 15px;
+        }
+
+        .reati-list ul {
+            columns: 2;
+            column-gap: 20px;
+            list-style-position: inside;
+        }
+
+        .reati-list li {
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .relazione-schema {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .relazione-schema h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .relazione-schema ol {
+            margin-left: 20px;
+            columns: 2;
+            column-gap: 20px;
+        }
+
+        .relazione-schema li {
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .toggle-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-top: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            background: #764ba2;
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .collapsible-content.active {
+            max-height: 2000px;
+        }
+
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .footer p {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .reati-list ul,
+            .relazione-schema ol {
+                columns: 1;
+            }
+
+            .schema-table {
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📈 Dati sulla violenza di genere</h1>
+            <div class="subtitle">Dall'analisi automatica della Legge 15 maggio 2022, n. 53 <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53" target="_blank" style="color: white; text-decoration: underline; opacity: 0.9;">(leggi norma)</a></div>
+            <div class="ref">Disposizioni in materia di statistiche in tema di violenza di genere</div>
+        </div>
+
+        <div class="content">
+            <div style="margin-bottom: 30px; text-align: center;">
+                <button class="toggle-btn" onclick="toggleContent('workflow-info')" style="font-size: 1em; padding: 12px 24px;">
+                    ℹ️ Come è stata realizzata questa pagina
+                </button>
+
+                <div id="workflow-info" class="collapsible-content" style="margin-top: 20px;">
+                    <div style="background: #f8f9fa; padding: 25px; border-radius: 10px; border-left: 4px solid #667eea; text-align: left;">
+                        <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+                            <p style="margin-bottom: 10px;"><strong style="text-transform: uppercase;">Nota bene:</strong> questa è un'analisi automatica che va verificata.</p>
+                            <p>L'obiettivo è mostrare quanto siano comode queste modalità per esplorare una norma.</p>
+                        </div>
+
+                        <h3 style="color: #667eea; margin-bottom: 15px;">📋 Workflow di creazione</h3>
+
+                        <p style="margin-bottom: 15px;">Questa pagina è stata generata automaticamente seguendo questi passaggi:</p>
+
+                        <ol style="line-height: 1.8; margin-left: 20px;">
+                            <li><strong>Estrazione</strong>: La norma è stata convertita da XML Akoma Ntoso (uno dei formati di pubblicazione delle norme su normattiva.it) a Markdown usando <a href="https://github.com/aborruso/normattiva_2_md" target="_blank" style="color: #667eea; text-decoration: none; font-weight: 600;">normattiva2md</a></li>
+                            <li><strong>Analisi</strong>: Il file Markdown è stato elaborato con Claude Sonnet 4.5</li>
+                            <li><strong>Output</strong>: Generazione automatica di questa pagina web</li>
+                        </ol>
+
+                        <h4 style="color: #764ba2; margin-top: 20px; margin-bottom: 10px;">💬 Prompt utilizzato:</h4>
+                        <div style="background: white; padding: 15px; border-radius: 5px; font-family: monospace; font-size: 0.9em; border: 1px solid #e1e8ed;">
+                            <p style="margin-bottom: 10px;">Analizza questa norma e descrivi quali sono i dataset e con quali schemi derivano, per ognuno degli enti coinvolti.</p>
+                            <p style="margin-bottom: 10px;">Per ogni dataset, aggiungi il riferimento agli articoli della legge da cui si è dedotto lo schema, con link a normattiva.it in formato:<br>
+                            https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art[N]</p>
+                            <p style="margin-bottom: 10px;">Crea una pagina web autoconsistente in termini di CSS e eventuali JavaScript, con uno stile grafico e di testo che rende semplice, comprensibile e interessante la lettura.</p>
+                            <p>Nell'header, in corrispondenza del titolo della legge, aggiungi il link "(leggi norma)" che punta alla norma completa su normattiva.it.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overview">
+                <h2>🎯 Obiettivo della Legge</h2>
+                <p>
+                    Garantire un <strong>flusso informativo adeguato</strong> per cadenza e contenuti sulla violenza di genere contro le donne,
+                    al fine di progettare politiche di prevenzione e contrasto efficaci e assicurare un monitoraggio costante del fenomeno
+                    attraverso la creazione di <strong>sistemi integrati di raccolta dati</strong> tra diversi enti istituzionali.
+                </p>
+            </div>
+
+            <div class="enti-section">
+                <h2 class="section-title">🏛️ Enti Coinvolti e Dataset</h2>
+
+                <!-- ISTAT e SISTAN -->
+                <div class="ente-card" id="ente-istat">
+                    <h3>ISTAT e Sistema Statistico Nazionale (SISTAN)</h3>
+                    <div class="descrizione">
+                        Ente responsabile della conduzione di indagini campionarie sulla violenza contro le donne e della rilevazione dati
+                        dai centri antiviolenza e case rifugio.
+                    </div>
+
+                    <div class="dataset-box" id="istat-indagine-campionaria">
+                        <div class="dataset-title">📋 Dataset 1: Indagine Campionaria sulla Violenza</div>
+                        <div style="margin-bottom: 10px; font-size: 0.9em;">
+                            <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art2" target="_blank" style="color: #667eea; text-decoration: none;">📖 Riferimento: Art. 2</a>
+                        </div>
+                        <span class="badge badge-triennale">Cadenza: Triennale</span>
+                        <span class="badge badge-12mesi">Livello: Regionale</span>
+
+                        <table class="schema-table">
+                            <thead>
+                                <tr>
+                                    <th>Campo</th>
+                                    <th>Descrizione</th>
+                                    <th>Tipo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>tipo_violenza</td>
+                                    <td>Fisica, sessuale, psicologica, economica</td>
+                                    <td>Enumerativo</td>
+                                </tr>
+                                <tr>
+                                    <td>relazione_autore_vittima</td>
+                                    <td>15 modalità predefinite (vedi schema dettagliato)</td>
+                                    <td>Enumerativo</td>
+                                </tr>
+                                <tr>
+                                    <td>presenza_figli_minori</td>
+                                    <td>Presenza figli sul luogo del fatto</td>
+                                    <td>Booleano</td>
+                                </tr>
+                                <tr>
+                                    <td>atti_persecutori</td>
+                                    <td>Presenza di stalking</td>
+                                    <td>Booleano</td>
+                                </tr>
+                                <tr>
+                                    <td>area_geografica</td>
+                                    <td>Stime fino al livello regionale</td>
+                                    <td>Geografico</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="relazione-schema">
+                            <h4>🔗 Schema Relazione Autore-Vittima (Set Minimo Obbligatorio)</h4>
+                            <ol>
+                                <li>Coniuge/convivente</li>
+                                <li>Fidanzato</li>
+                                <li>Ex coniuge/ex convivente</li>
+                                <li>Ex fidanzato</li>
+                                <li>Altro parente</li>
+                                <li>Collega/datore di lavoro</li>
+                                <li>Conoscente/amico</li>
+                                <li>Cliente</li>
+                                <li>Vicino di casa</li>
+                                <li>Compagno di scuola</li>
+                                <li>Insegnante/persona con funzione di cura</li>
+                                <li>Medico/operatore sanitario</li>
+                                <li>Persona sconosciuta</li>
+                                <li>Altro</li>
+                                <li>Autore non identificato</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="dataset-box" id="istat-centri-antiviolenza">
+                        <div class="dataset-title">📋 Dataset 2: Indagini su Centri Antiviolenza e Case Rifugio</div>
+                        <div style="margin-bottom: 10px; font-size: 0.9em;">
+                            <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art7" target="_blank" style="color: #667eea; text-decoration: none;">📖 Riferimento: Art. 7</a>
+                        </div>
+                        <span class="badge badge-triennale">Cadenza: Periodica</span>
+
+                        <table class="schema-table">
+                            <thead>
+                                <tr>
+                                    <th>Campo</th>
+                                    <th>Descrizione</th>
+                                    <th>Note</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>accreditamento</td>
+                                    <td>Centro accreditato o non accreditato</td>
+                                    <td>Dati distinti</td>
+                                </tr>
+                                <tr>
+                                    <td>caratteristiche_utenza</td>
+                                    <td>Profilo utenti che si rivolgono al centro</td>
+                                    <td>Anonimizzati</td>
+                                </tr>
+                                <tr>
+                                    <td>relazione_autore_vittima</td>
+                                    <td>Come schema precedente</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>tipologia_violenza</td>
+                                    <td>Fisica, sessuale, psicologica, economica, atti persecutori</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>interventi_assistenza</td>
+                                    <td>Numero e tipologia interventi forniti</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>localizzazione</td>
+                                    <td>Disaggregazione regionale e provinciale</td>
+                                    <td>Trento e Bolzano</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Strutture Sanitarie -->
+                <div class="ente-card" id="ente-sanita">
+                    <h3>Strutture Sanitarie Pubbliche e Pronto Soccorso</h3>
+                    <div class="descrizione">
+                        Tutte le strutture sanitarie pubbliche, in particolare i pronto soccorso, devono fornire dati sulla violenza contro le donne
+                        attraverso il sistema informativo di monitoraggio dell'assistenza in emergenza-urgenza.
+                    </div>
+
+                    <div class="dataset-box" id="sanita-pronto-soccorso">
+                        <div class="dataset-title">📋 Dataset: Sistema Informativo Pronto Soccorso</div>
+                        <div style="margin-bottom: 10px; font-size: 0.9em;">
+                            <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art4" target="_blank" style="color: #667eea; text-decoration: none;">📖 Riferimento: Art. 4</a>
+                        </div>
+                        <span class="badge badge-6mesi">Implementazione: Entro 6 mesi</span>
+
+                        <table class="schema-table">
+                            <thead>
+                                <tr>
+                                    <th>Campo</th>
+                                    <th>Descrizione</th>
+                                    <th>Riferimento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>relazione_autore_vittima</td>
+                                    <td>15 modalità obbligatorie</td>
+                                    <td>Art. 2 comma 2</td>
+                                </tr>
+                                <tr>
+                                    <td>tipologia_violenza</td>
+                                    <td>Fisica, sessuale, psicologica, economica</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>presenza_figli</td>
+                                    <td>Violenza commessa in presenza figli</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>atti_persecutori</td>
+                                    <td>Violenza con atti persecutori</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>indicatori_rischio</td>
+                                    <td>Rischio di revittimizzazione</td>
+                                    <td>Allegato B DPCM 24/11/2017</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                            <strong>Nota:</strong> Garantita anonimizzazione delle vittime. Modifiche al DM 17/12/2008 tramite decreto
+                            Ministero Salute, Pari Opportunità e Lavoro.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Ministero dell'Interno -->
+                <div class="ente-card" id="ente-interno">
+                    <h3>Ministero dell'Interno - Centro Elaborazione Dati</h3>
+                    <div class="descrizione">
+                        Il Centro Elaborazione Dati (art. 8 L. 121/1981) deve essere dotato di funzionalità per rilevare informazioni dettagliate
+                        sui reati di violenza di genere.
+                    </div>
+
+                    <div class="dataset-box" id="interno-ced-reati">
+                        <div class="dataset-title">📋 Dataset: Centro Elaborazione Dati Reati</div>
+                        <div style="margin-bottom: 10px; font-size: 0.9em;">
+                            <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5" target="_blank" style="color: #667eea; text-decoration: none;">📖 Riferimento: Art. 5</a>
+                        </div>
+                        <span class="badge badge-12mesi">Implementazione: Entro 12 mesi</span>
+                        <span class="badge badge-semestrale">Trasmissione ISTAT: Semestrale</span>
+
+                        <table class="schema-table">
+                            <thead>
+                                <tr>
+                                    <th>Campo</th>
+                                    <th>Descrizione</th>
+                                    <th>Note</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>tipo_reato</td>
+                                    <td>Codice reato (vedi lista 27 reati)</td>
+                                    <td>Art. 5 comma 3</td>
+                                </tr>
+                                <tr>
+                                    <td>relazione_autore_vittima</td>
+                                    <td>15 modalità obbligatorie</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>eta_autore</td>
+                                    <td>Età dell'autore del reato</td>
+                                    <td>Se nota</td>
+                                </tr>
+                                <tr>
+                                    <td>genere_autore</td>
+                                    <td>Genere autore</td>
+                                    <td>Se noto</td>
+                                </tr>
+                                <tr>
+                                    <td>eta_vittima</td>
+                                    <td>Età della vittima</td>
+                                    <td>Se nota</td>
+                                </tr>
+                                <tr>
+                                    <td>genere_vittima</td>
+                                    <td>Genere vittima</td>
+                                    <td>Se noto</td>
+                                </tr>
+                                <tr>
+                                    <td>luogo_fatto</td>
+                                    <td>Dove è avvenuto il fatto</td>
+                                    <td>Se noto</td>
+                                </tr>
+                                <tr>
+                                    <td>tipologia_arma</td>
+                                    <td>Arma eventualmente utilizzata</td>
+                                    <td>Se nota</td>
+                                </tr>
+                                <tr>
+                                    <td>presenza_figli</td>
+                                    <td>Violenza in presenza figli</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>atti_persecutori</td>
+                                    <td>Violenza con stalking</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <button class="toggle-btn" onclick="toggleContent('reati-list')">
+                            📜 Mostra/Nascondi Lista Completa 27 Reati Monitorati
+                        </button>
+
+                        <div id="reati-list" class="collapsible-content reati-list active">
+                            <h4>Reati oggetto di rilevazione (Art. 5, comma 3):</h4>
+                            <ul>
+                                <li>Omicidio (art. 575 CP) anche tentato</li>
+                                <li>Percosse (art. 581 CP)</li>
+                                <li>Lesioni personali (art. 582 CP)</li>
+                                <li>Violenza sessuale (art. 609-bis CP)</li>
+                                <li>Violenza sessuale di gruppo (art. 609-octies CP)</li>
+                                <li>Atti sessuali con minorenne (art. 609-quater CP)</li>
+                                <li>Corruzione di minorenne (art. 609-quinquies CP)</li>
+                                <li>Maltrattamenti (art. 572 CP)</li>
+                                <li>Atti persecutori (art. 612-bis CP)</li>
+                                <li>Revenge porn (art. 612-ter CP)</li>
+                                <li>Violazione allontanamento (art. 387-bis CP)</li>
+                                <li>Costrizione al matrimonio (art. 558-bis CP)</li>
+                                <li>Mutilazioni genitali femminili (art. 583-bis CP)</li>
+                                <li>Sfregio permanente (art. 583-quinquies CP)</li>
+                                <li>Interruzione gravidanza non consensuale (art. 593-ter CP)</li>
+                                <li>Sequestro di persona (art. 605 CP)</li>
+                                <li>Violenza privata (art. 610 CP)</li>
+                                <li>Violazione di domicilio (art. 614 CP)</li>
+                                <li>Violazione obblighi assistenza familiare (artt. 570-570bis CP)</li>
+                                <li>Prostituzione minorile (art. 600-bis CP)</li>
+                                <li>Abbandono minore/incapace (art. 591 CP)</li>
+                                <li>Danneggiamento (art. 635 CP)</li>
+                                <li>Estorsione (art. 629 CP)</li>
+                                <li>Minaccia (art. 612 CP)</li>
+                                <li>Sfruttamento prostituzione (art. 3 L. 75/1958)</li>
+                                <li>Circonvenzione di incapace (art. 643 CP)</li>
+                                <li>Tratta di persone (art. 601 CP)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ministero della Giustizia -->
+                <div class="ente-card" id="ente-giustizia">
+                    <h3>Ministero della Giustizia</h3>
+                    <div class="descrizione">
+                        Responsabile del monitoraggio dei procedimenti giudiziari attraverso il registro notizie di reato e i sistemi informativi
+                        del Ministero, con particolare attenzione al patrocinio e ai precedenti penali.
+                    </div>
+
+                    <div class="dataset-box" id="giustizia-registro-reati">
+                        <div class="dataset-title">📋 Dataset 1: Registro Notizie di Reato (art. 335 CPP)</div>
+                        <div style="margin-bottom: 10px; font-size: 0.9em;">
+                            <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art6" target="_blank" style="color: #667eea; text-decoration: none;">📖 Riferimento: Art. 6</a>
+                        </div>
+                        <span class="badge badge-12mesi">Implementazione: Entro 12 mesi</span>
+
+                        <table class="schema-table">
+                            <thead>
+                                <tr>
+                                    <th>Campo</th>
+                                    <th>Descrizione</th>
+                                    <th>Riferimento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>reato</td>
+                                    <td>27 reati elencati art. 5 comma 3</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>relazione_autore_vittima</td>
+                                    <td>15 modalità obbligatorie</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>eta_autore</td>
+                                    <td>Caratteristiche età autore</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>genere_autore</td>
+                                    <td>Genere autore</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>eta_vittima</td>
+                                    <td>Caratteristiche età vittima</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>genere_vittima</td>
+                                    <td>Genere vittima</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>presenza_figli</td>
+                                    <td>Sul luogo del fatto</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>luogo_fatto</td>
+                                    <td>Dove è avvenuto</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <td>tipologia_arma</td>
+                                    <td>Eventuale arma utilizzata</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="dataset-box" id="giustizia-procedimenti">
+                        <div class="dataset-title">📋 Dataset 2: Sistema Rilevazione Procedimenti</div>
+                        <div style="margin-bottom: 10px; font-size: 0.9em;">
+                            <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art6" target="_blank" style="color: #667eea; text-decoration: none;">📖 Riferimento: Art. 6 comma 2</a>
+                        </div>
+                        <span class="badge badge-12mesi">Implementazione: Entro 12 mesi</span>
+
+                        <table class="schema-table">
+                            <thead>
+                                <tr>
+                                    <th>Campo</th>
+                                    <th>Soggetto</th>
+                                    <th>Descrizione</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>difensore</td>
+                                    <td>Indagato/Imputato, Persona offesa, Parte civile</td>
+                                    <td>Nomina difensore fiducia o ufficio</td>
+                                </tr>
+                                <tr>
+                                    <td>patrocinio_gratuito</td>
+                                    <td>Indagato/Imputato, Persona offesa, Parte civile</td>
+                                    <td>Richiesta e ammissione patrocinio (DPR 115/2002 art. 76 c. 4-ter)</td>
+                                </tr>
+                                <tr>
+                                    <td>precedenti_penali</td>
+                                    <td>Indagato/Imputato</td>
+                                    <td>Precedenti condanne pene detentive</td>
+                                </tr>
+                                <tr>
+                                    <td>recidivo</td>
+                                    <td>Indagato/Imputato</td>
+                                    <td>Qualifica di recidivo</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sistema Interministeriale -->
+                <div class="ente-card" id="ente-interministeriale">
+                    <h3>Sistema Interministeriale di Raccolta Dati</h3>
+                    <div class="descrizione">
+                        Sistema integrato istituito con decreto del Ministero della Giustizia che raccoglie dati da Interno e Giustizia,
+                        censendo informazioni su denunce, misure e procedimenti per ogni vittima.
+                    </div>
+
+                    <div class="dataset-box" id="interministeriale-integrato">
+                        <div class="dataset-title">📋 Dataset: Sistema Integrato Interministeriale</div>
+                        <div style="margin-bottom: 10px; font-size: 0.9em;">
+                            <a href="https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:2022-05-05;53~art5" target="_blank" style="color: #667eea; text-decoration: none;">📖 Riferimento: Art. 5 comma 4</a>
+                        </div>
+                        <span class="badge badge-12mesi">Istituzione: Entro 12 mesi</span>
+
+                        <table class="schema-table">
+                            <thead>
+                                <tr>
+                                    <th>Categoria Dati</th>
+                                    <th>Informazioni Raccolte</th>
+                                    <th>Fonte</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Dati reato</td>
+                                    <td>Informazioni principali sui 27 reati monitorati</td>
+                                    <td>Interno + Giustizia</td>
+                                </tr>
+                                <tr>
+                                    <td>Denunce</td>
+                                    <td>Per ogni donna vittima, in ogni grado procedimento</td>
+                                    <td>Interno</td>
+                                </tr>
+                                <tr>
+                                    <td>Misure prevenzione</td>
+                                    <td>Applicate da Questore o Autorità giudiziaria</td>
+                                    <td>Interno + Giustizia</td>
+                                </tr>
+                                <tr>
+                                    <td>Misure precautelari</td>
+                                    <td>Per ogni vittima in procedimento</td>
+                                    <td>Giustizia</td>
+                                </tr>
+                                <tr>
+                                    <td>Misure cautelari</td>
+                                    <td>In ogni grado procedimento</td>
+                                    <td>Giustizia</td>
+                                </tr>
+                                <tr>
+                                    <td>Ordini protezione</td>
+                                    <td>Provvedimenti di protezione emessi</td>
+                                    <td>Giustizia</td>
+                                </tr>
+                                <tr>
+                                    <td>Misure sicurezza</td>
+                                    <td>Misure di sicurezza applicate</td>
+                                    <td>Giustizia</td>
+                                </tr>
+                                <tr>
+                                    <td>Archiviazioni</td>
+                                    <td>Provvedimenti di archiviazione</td>
+                                    <td>Giustizia</td>
+                                </tr>
+                                <tr>
+                                    <td>Sentenze</td>
+                                    <td>Sentenze in ogni grado</td>
+                                    <td>Giustizia</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                            <strong>Governance:</strong> Decreto Ministro Giustizia di concerto con Ministro Interno,
+                            sentito Garante Privacy. Alimentazione integrata da amministrazioni interessate.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Presidenza del Consiglio -->
+                <div class="ente-card" id="ente-presidenza">
+                    <h3>Presidenza del Consiglio - Dipartimento Pari Opportunità</h3>
+                    <div class="descrizione">
+                        Ruolo di coordinamento e indirizzo delle politiche. Riceve tutti i dati dagli altri enti e redige la relazione annuale
+                        al Parlamento sul fenomeno della violenza di genere.
+                    </div>
+
+                    <div class="dataset-box" id="presidenza-relazione-parlamento">
+                        <div class="dataset-title">📋 Output: Relazione Annuale al Parlamento</div>
+                        <span class="badge badge-triennale">Cadenza: Annuale</span>
+
+                        <table class="schema-table">
+                            <thead>
+                                <tr>
+                                    <th>Fonte Dati</th>
+                                    <th>Contenuto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>ISTAT</td>
+                                    <td>Indagini campionarie triennali + dati centri antiviolenza</td>
+                                </tr>
+                                <tr>
+                                    <td>Ministero Interno</td>
+                                    <td>Dati CED anonimizzati, cadenza semestrale</td>
+                                </tr>
+                                <tr>
+                                    <td>Ministero Giustizia</td>
+                                    <td>Dati procedimenti e sistema interministeriale</td>
+                                </tr>
+                                <tr>
+                                    <td>Strutture sanitarie</td>
+                                    <td>Sistema informativo pronto soccorso</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <p style="margin-top: 15px; font-size: 0.9em; color: #666;">
+                            <strong>Riferimento:</strong> Integrazione relazione art. 5-bis comma 7 DL 93/2013 conv. L. 119/2013.
+                            Fermi i divieti: segreto investigativo e art. 9 L. 121/1981.
+                        </p>
+                    </div>
+
+                    <div class="dataset-box">
+                        <div class="dataset-title">⚙️ Potere di Indirizzo</div>
+                        <p style="margin-top: 10px;">
+                            Il Ministro con delega per le pari opportunità ha il potere di indirizzo per individuare le esigenze di rilevazione statistica.
+                            Può richiedere all'ISTAT l'integrazione dei quesiti per nuove esigenze informative emerse.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Timeline -->
+            <div class="timeline">
+                <h2>⏱️ Timeline di Implementazione</h2>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Entro 6 mesi</div>
+                    <div>
+                        <strong>Decreto Ministero Salute:</strong> Modifiche al sistema informativo pronto soccorso
+                        (DM Salute + Pari Opportunità + Lavoro)
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Entro 12 mesi</div>
+                    <div>
+                        <strong>Ministero Interno:</strong> Dotazione funzionalità Centro Elaborazione Dati
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Entro 12 mesi</div>
+                    <div>
+                        <strong>Ministero Giustizia:</strong> Individuazione modalità monitoraggio fenomeno
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Entro 12 mesi</div>
+                    <div>
+                        <strong>Decreto Ministero Giustizia:</strong> Modifiche al regolamento esecuzione CPP
+                        (registro notizie reato - DM 334/1989)
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Entro 12 mesi</div>
+                    <div>
+                        <strong>Decreto Ministero Giustizia:</strong> Modifiche sistema rilevazione dati
+                        (patrocinio, precedenti, recidiva)
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Entro 12 mesi</div>
+                    <div>
+                        <strong>Sistema Interministeriale:</strong> Istituzione con DM Giustizia + Interno
+                        (sentito Garante Privacy)
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Cadenza triennale</div>
+                    <div>
+                        <strong>ISTAT:</strong> Indagine campionaria sulla violenza contro le donne
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Cadenza periodica</div>
+                    <div>
+                        <strong>ISTAT:</strong> Indagini su centri antiviolenza e case rifugio
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Cadenza semestrale</div>
+                    <div>
+                        <strong>Ministero Interno → ISTAT:</strong> Trasmissione dati CED anonimizzati
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Annuale</div>
+                    <div>
+                        <strong>Dipartimento Pari Opportunità:</strong> Relazione al Parlamento integrata
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="footer">
+            <p>Analisi generata da Legge 15 maggio 2022, n. 53</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">
+                Fonte: Gazzetta Ufficiale 24 maggio 2022 - Codice redazionale 22G00062
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function toggleContent(id) {
+            const element = document.getElementById(id);
+            element.classList.toggle('active');
+        }
+
+        // Animazione scroll per le card
+        const cards = document.querySelectorAll('.ente-card');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+
+        // Gestione click sui titoli dataset per attivare l'ancora
+        document.querySelectorAll('.dataset-title').forEach(title => {
+            const datasetBox = title.closest('.dataset-box');
+            if (datasetBox && datasetBox.id) {
+                title.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const anchor = '#' + datasetBox.id;
+                    // Aggiorna l'URL
+                    history.pushState(null, null, anchor);
+                    // Scrolla all'elemento
+                    datasetBox.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+        });
+
+        // Gestione click sui titoli enti per attivare l'ancora
+        document.querySelectorAll('.ente-card h3').forEach(title => {
+            const enteCard = title.closest('.ente-card');
+            if (enteCard && enteCard.id) {
+                title.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const anchor = '#' + enteCard.id;
+                    // Aggiorna l'URL
+                    history.pushState(null, null, anchor);
+                    // Scrolla all'elemento
+                    enteCard.scrollIntoView({ behavior: 'smooth' });
+                });
+            }
+        });
+    </script>
+</body>
+</html>
