@@ -54,7 +54,7 @@ normattiva2md "https://normattiva.it/..." output.md</code></pre>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Direct URL Support</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Supporto URL diretto</h3>
                 <p class="text-gray-600 mb-4">
                     Processa direttamente URL da normattiva.it senza download manuale. Auto-detection e conversione immediata.
                 </p>
@@ -70,9 +70,9 @@ normattiva2md "https://normattiva.it/..." output.md</code></pre>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">AI-Powered Search</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Ricerca in linguaggio naturale</h3>
                 <p class="text-gray-600 mb-4">
-                    Ricerca in linguaggio naturale con Exa AI. Trova leggi per contenuto, non solo per riferimento normativo.
+                    Trova leggi per contenuto, non solo per riferimento normativo. Ricerca basata su Exa AI.
                 </p>
                 <div class="text-sm text-gray-500">
                     <code class="bg-gray-100 px-2 py-1 rounded">-s "legge Stanca accessibilità"</code>
@@ -86,7 +86,7 @@ normattiva2md "https://normattiva.it/..." output.md</code></pre>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Cross-References</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Riferimenti incrociati</h3>
                 <p class="text-gray-600 mb-4">
                     Link automatici a leggi citate. Scarica automaticamente tutte le normative referenziate.
                 </p>
@@ -102,7 +102,7 @@ normattiva2md "https://normattiva.it/..." output.md</code></pre>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">LLM-Optimized</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Ottimizzato per LLM</h3>
                 <p class="text-gray-600 mb-4">
                     Output con YAML frontmatter e gerarchia book-style (H1→H4). Fino al 60% di riduzione token rispetto a XML.
                 </p>
@@ -118,7 +118,7 @@ normattiva2md "https://normattiva.it/..." output.md</code></pre>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Article Extraction</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Estrazione articoli</h3>
                 <p class="text-gray-600 mb-4">
                     Estrai singoli articoli specifici da una legge usando la sintassi ~art. Perfetto per analisi mirate.
                 </p>
@@ -134,7 +134,7 @@ normattiva2md "https://normattiva.it/..." output.md</code></pre>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-semibold text-gray-900 mb-2">Production-Ready</h3>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Pronto per la produzione</h3>
                 <p class="text-gray-600 mb-4">
                     Security features, CI/CD con GitHub Actions, binary precompilati. Testato e documentato.
                 </p>
@@ -152,7 +152,7 @@ normattiva2md "https://normattiva.it/..." output.md</code></pre>
         <div class="text-center mb-16">
             <h2 class="text-4xl font-bold text-gray-900 mb-4">Vedi la differenza</h2>
             <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Da XML complesso Akoma Ntoso a Markdown pulito e LLM-friendly
+                Da XML Akoma Ntoso a Markdown pulito e LLM-friendly
             </p>
         </div>
         <div class="max-w-6xl mx-auto">
@@ -382,7 +382,7 @@ normattiva2md input.xml output.md</code></pre>
 
                     <!-- Example 2 -->
                     <div>
-                        <div class="text-sm font-semibold text-gray-500 mb-2">Ricerca con AI (richiede Exa API key)</div>
+                        <div class="text-sm font-semibold text-gray-500 mb-2">Ricerca con AI (richiede <a href="https://docs.exa.ai/reference/getting-started" target="_blank" class="text-blue-600 hover:underline">Exa API key</a>)</div>
                         <div class="bg-gray-900 rounded-lg overflow-hidden">
                             <pre><code class="language-bash"># Configura API key
 export EXA_API_KEY='your-api-key'
@@ -400,10 +400,10 @@ normattiva2md -s "GDPR italiano" output.md --debug-search</code></pre>
                         <div class="text-sm font-semibold text-gray-500 mb-2">Estrazione articolo specifico</div>
                         <div class="bg-gray-900 rounded-lg overflow-hidden">
                             <pre><code class="language-bash"># Estrai solo articolo 3
-normattiva2md "URL~art3" articolo3.md
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82~art3" articolo3.md
 
 # Articoli con bis/ter
-normattiva2md "URL~art16bis" art16bis.md</code></pre>
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82~art6bis" art6bis.md</code></pre>
                         </div>
                     </div>
 
@@ -412,7 +412,7 @@ normattiva2md "URL~art16bis" art16bis.md</code></pre>
                         <div class="text-sm font-semibold text-gray-500 mb-2">Download con riferimenti</div>
                         <div class="bg-gray-900 rounded-lg overflow-hidden">
                             <pre><code class="language-bash"># Scarica legge + tutte le leggi citate
-normattiva2md "URL" output.md --with-references</code></pre>
+normattiva2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:2005-03-07;82" output.md --with-references</code></pre>
                         </div>
                     </div>
                 </div>
