@@ -2,6 +2,22 @@
 
 Questo file documenta gli avanzamenti significativi e le decisioni chiave del progetto `normattiva_2_md`.
 
+## 2025-12-02
+
+### 🔧 Fix GitHub Pages: Workflow Jekyll 4.3 via Actions
+
+**Problema risolto**: GitHub Pages non supporta Jekyll 4.3 nel Gemfile
+
+#### Soluzione implementata
+- Creato workflow `.github/workflows/jekyll.yml` per build e deploy via Actions
+- Usa Ruby 3.3 e dipendenze dal `docs/Gemfile`
+- Build in ambiente production con baseurl dinamico
+- Deploy automatico su push a main
+
+#### Configurazione richiesta
+Nelle impostazioni GitHub del repo (Settings > Pages):
+- Source: "GitHub Actions"
+
 ## 2025-11-04
 
 ### 🚀 Release v2.0.7: Added Permanent Link Field to Frontmatter

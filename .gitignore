@@ -63,3 +63,4 @@ node_modules/
 # Virtual environments (already have venv/, but add .venv/)
 .venv/
 plans/
+tasks/todo.md
