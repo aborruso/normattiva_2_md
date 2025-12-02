@@ -510,6 +510,7 @@
                                 <tr>
                                     <th>Campo</th>
                                     <th>Descrizione</th>
+                                    <th>Tipo</th>
                                     <th>Note</th>
                                 </tr>
                             </thead>
@@ -517,31 +518,37 @@
                                 <tr>
                                     <td>accreditamento</td>
                                     <td>Centro accreditato o non accreditato</td>
+                                    <td>Booleano</td>
                                     <td>Dati distinti</td>
                                 </tr>
                                 <tr>
                                     <td>caratteristiche_utenza</td>
                                     <td>Profilo utenti che si rivolgono al centro</td>
+                                    <td>Testuale</td>
                                     <td>Anonimizzati</td>
                                 </tr>
                                 <tr>
                                     <td>relazione_autore_vittima</td>
                                     <td>Come schema precedente</td>
-                                    <td>-</td>
+                                    <td>Enumerativo</td>
+                                    <td>15 modalità</td>
                                 </tr>
                                 <tr>
                                     <td>tipologia_violenza</td>
                                     <td>Fisica, sessuale, psicologica, economica, atti persecutori</td>
+                                    <td>Enumerativo</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>interventi_assistenza</td>
                                     <td>Numero e tipologia interventi forniti</td>
+                                    <td>Numerico/Testuale</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>localizzazione</td>
                                     <td>Disaggregazione regionale e provinciale</td>
+                                    <td>Geografico</td>
                                     <td>Trento e Bolzano</td>
                                 </tr>
                             </tbody>
@@ -569,6 +576,7 @@
                                 <tr>
                                     <th>Campo</th>
                                     <th>Descrizione</th>
+                                    <th>Tipo</th>
                                     <th>Riferimento</th>
                                 </tr>
                             </thead>
@@ -576,26 +584,31 @@
                                 <tr>
                                     <td>relazione_autore_vittima</td>
                                     <td>15 modalità obbligatorie</td>
+                                    <td>Enumerativo</td>
                                     <td>Art. 2 comma 2</td>
                                 </tr>
                                 <tr>
                                     <td>tipologia_violenza</td>
                                     <td>Fisica, sessuale, psicologica, economica</td>
+                                    <td>Enumerativo</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>presenza_figli</td>
                                     <td>Violenza commessa in presenza figli</td>
+                                    <td>Booleano</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>atti_persecutori</td>
                                     <td>Violenza con atti persecutori</td>
+                                    <td>Booleano</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>indicatori_rischio</td>
                                     <td>Rischio di revittimizzazione</td>
+                                    <td>Numerico/Enumerativo</td>
                                     <td>Allegato B DPCM 24/11/2017</td>
                                 </tr>
                             </tbody>
@@ -629,6 +642,7 @@
                                 <tr>
                                     <th>Campo</th>
                                     <th>Descrizione</th>
+                                    <th>Tipo</th>
                                     <th>Note</th>
                                 </tr>
                             </thead>
@@ -636,51 +650,61 @@
                                 <tr>
                                     <td>tipo_reato</td>
                                     <td>Codice reato (vedi lista 27 reati)</td>
+                                    <td>Enumerativo</td>
                                     <td>Art. 5 comma 3</td>
                                 </tr>
                                 <tr>
                                     <td>relazione_autore_vittima</td>
                                     <td>15 modalità obbligatorie</td>
+                                    <td>Enumerativo</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>eta_autore</td>
                                     <td>Età dell'autore del reato</td>
+                                    <td>Numerico</td>
                                     <td>Se nota</td>
                                 </tr>
                                 <tr>
                                     <td>genere_autore</td>
                                     <td>Genere autore</td>
+                                    <td>Enumerativo</td>
                                     <td>Se noto</td>
                                 </tr>
                                 <tr>
                                     <td>eta_vittima</td>
                                     <td>Età della vittima</td>
+                                    <td>Numerico</td>
                                     <td>Se nota</td>
                                 </tr>
                                 <tr>
                                     <td>genere_vittima</td>
                                     <td>Genere vittima</td>
+                                    <td>Enumerativo</td>
                                     <td>Se noto</td>
                                 </tr>
                                 <tr>
                                     <td>luogo_fatto</td>
                                     <td>Dove è avvenuto il fatto</td>
+                                    <td>Geografico/Testuale</td>
                                     <td>Se noto</td>
                                 </tr>
                                 <tr>
                                     <td>tipologia_arma</td>
                                     <td>Arma eventualmente utilizzata</td>
+                                    <td>Enumerativo</td>
                                     <td>Se nota</td>
                                 </tr>
                                 <tr>
                                     <td>presenza_figli</td>
                                     <td>Violenza in presenza figli</td>
+                                    <td>Booleano</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>atti_persecutori</td>
                                     <td>Violenza con stalking</td>
+                                    <td>Booleano</td>
                                     <td>-</td>
                                 </tr>
                             </tbody>
@@ -745,6 +769,7 @@
                                 <tr>
                                     <th>Campo</th>
                                     <th>Descrizione</th>
+                                    <th>Tipo</th>
                                     <th>Riferimento</th>
                                 </tr>
                             </thead>
@@ -752,46 +777,55 @@
                                 <tr>
                                     <td>reato</td>
                                     <td>27 reati elencati art. 5 comma 3</td>
+                                    <td>Enumerativo</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>relazione_autore_vittima</td>
                                     <td>15 modalità obbligatorie</td>
+                                    <td>Enumerativo</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>eta_autore</td>
                                     <td>Caratteristiche età autore</td>
+                                    <td>Numerico</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>genere_autore</td>
                                     <td>Genere autore</td>
+                                    <td>Enumerativo</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>eta_vittima</td>
                                     <td>Caratteristiche età vittima</td>
+                                    <td>Numerico</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>genere_vittima</td>
                                     <td>Genere vittima</td>
+                                    <td>Enumerativo</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>presenza_figli</td>
                                     <td>Sul luogo del fatto</td>
+                                    <td>Booleano</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>luogo_fatto</td>
                                     <td>Dove è avvenuto</td>
+                                    <td>Geografico/Testuale</td>
                                     <td>-</td>
                                 </tr>
                                 <tr>
                                     <td>tipologia_arma</td>
                                     <td>Eventuale arma utilizzata</td>
+                                    <td>Enumerativo</td>
                                     <td>-</td>
                                 </tr>
                             </tbody>
@@ -811,6 +845,7 @@
                                     <th>Campo</th>
                                     <th>Soggetto</th>
                                     <th>Descrizione</th>
+                                    <th>Tipo</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -818,21 +853,25 @@
                                     <td>difensore</td>
                                     <td>Indagato/Imputato, Persona offesa, Parte civile</td>
                                     <td>Nomina difensore fiducia o ufficio</td>
+                                    <td>Enumerativo</td>
                                 </tr>
                                 <tr>
                                     <td>patrocinio_gratuito</td>
                                     <td>Indagato/Imputato, Persona offesa, Parte civile</td>
                                     <td>Richiesta e ammissione patrocinio (DPR 115/2002 art. 76 c. 4-ter)</td>
+                                    <td>Booleano</td>
                                 </tr>
                                 <tr>
                                     <td>precedenti_penali</td>
                                     <td>Indagato/Imputato</td>
                                     <td>Precedenti condanne pene detentive</td>
+                                    <td>Numerico/Testuale</td>
                                 </tr>
                                 <tr>
                                     <td>recidivo</td>
                                     <td>Indagato/Imputato</td>
                                     <td>Qualifica di recidivo</td>
+                                    <td>Booleano</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -859,6 +898,7 @@
                                 <tr>
                                     <th>Categoria Dati</th>
                                     <th>Informazioni Raccolte</th>
+                                    <th>Tipo</th>
                                     <th>Fonte</th>
                                 </tr>
                             </thead>
@@ -866,46 +906,55 @@
                                 <tr>
                                     <td>Dati reato</td>
                                     <td>Informazioni principali sui 27 reati monitorati</td>
+                                    <td>Enumerativo/Testuale</td>
                                     <td>Interno + Giustizia</td>
                                 </tr>
                                 <tr>
                                     <td>Denunce</td>
                                     <td>Per ogni donna vittima, in ogni grado procedimento</td>
+                                    <td>Numerico/Testuale</td>
                                     <td>Interno</td>
                                 </tr>
                                 <tr>
                                     <td>Misure prevenzione</td>
                                     <td>Applicate da Questore o Autorità giudiziaria</td>
+                                    <td>Enumerativo</td>
                                     <td>Interno + Giustizia</td>
                                 </tr>
                                 <tr>
                                     <td>Misure precautelari</td>
                                     <td>Per ogni vittima in procedimento</td>
+                                    <td>Enumerativo</td>
                                     <td>Giustizia</td>
                                 </tr>
                                 <tr>
                                     <td>Misure cautelari</td>
                                     <td>In ogni grado procedimento</td>
+                                    <td>Enumerativo</td>
                                     <td>Giustizia</td>
                                 </tr>
                                 <tr>
                                     <td>Ordini protezione</td>
                                     <td>Provvedimenti di protezione emessi</td>
+                                    <td>Enumerativo/Testuale</td>
                                     <td>Giustizia</td>
                                 </tr>
                                 <tr>
                                     <td>Misure sicurezza</td>
                                     <td>Misure di sicurezza applicate</td>
+                                    <td>Enumerativo</td>
                                     <td>Giustizia</td>
                                 </tr>
                                 <tr>
                                     <td>Archiviazioni</td>
                                     <td>Provvedimenti di archiviazione</td>
+                                    <td>Testuale</td>
                                     <td>Giustizia</td>
                                 </tr>
                                 <tr>
                                     <td>Sentenze</td>
                                     <td>Sentenze in ogni grado</td>
+                                    <td>Testuale</td>
                                     <td>Giustizia</td>
                                 </tr>
                             </tbody>
