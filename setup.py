@@ -48,14 +48,15 @@ setup(
         "requests>=2.25.0",
     ],
 
-    # Moduli Python
-    py_modules=["convert_akomantoso"],
+    # Pacchetti
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
 
     # Script da riga di comando
     entry_points={
         "console_scripts": [
-            "akoma2md=convert_akomantoso:main",
-            "normattiva2md=convert_akomantoso:main",
+            "akoma2md=normattiva2md.cli:main",
+            "normattiva2md=normattiva2md.cli:main",
         ],
     },
 
