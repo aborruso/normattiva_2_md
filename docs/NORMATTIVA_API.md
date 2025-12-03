@@ -147,7 +147,7 @@ Se normattiva.it pubblicasse API JSON ufficiali, si potrebbero implementare:
 ## Risorse
 
 - Sito: https://www.normattiva.it
-- Progetto normattiva2md: https://github.com/aborruso/normattiva_2_md
+- Progetto normattiva2md: https://github.com/ondata/normattiva_2_md
 - Gemini CLI: https://github.com/google-gemini/gemini-cli
 
 ## Aggiornamenti

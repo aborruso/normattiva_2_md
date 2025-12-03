@@ -17,13 +17,13 @@ def read_readme():
 
 setup(
     name="akoma2md",
-    version="2.0.20",
+    version="2.0.21",
     description="⚠️ DEPRECATED - Use 'normattiva2md' instead | Convertitore da XML Akoma Ntoso a Markdown (CLI: normattiva2md)",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
     author="Andrea Borruso",
     author_email="aborruso@gmail.com",
-    url="https://github.com/aborruso/normattiva_2_md",
+    url="https://github.com/ondata/normattiva_2_md",
 
     # Classificatori per PyPI
     classifiers=[

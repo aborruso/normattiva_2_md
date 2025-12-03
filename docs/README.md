@@ -89,6 +89,6 @@ Modifica `_layouts/default.html` per cambiare header, footer o struttura HTML.
 ## Link Utili
 
 - **Sito live**: https://aborruso.github.io/normattiva_2_md/
-- **Repository**: https://github.com/aborruso/normattiva_2_md
+- **Repository**: https://github.com/ondata/normattiva_2_md
 - **PyPI Package**: https://pypi.org/project/normattiva2md/
-- **Documentazione**: https://github.com/aborruso/normattiva_2_md/blob/main/README.md
+- **Documentazione**: https://github.com/ondata/normattiva_2_md/blob/main/README.md

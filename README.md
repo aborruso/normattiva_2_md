@@ -86,7 +86,7 @@ normattiva2md -s "legge stanca accessibilità" --exa-api-key "your-exa-api-key" 
 ### Installazione da sorgenti
 
 ```bash
-git clone https://github.com/aborruso/normattiva_2_md.git
+git clone https://github.com/ondata/normattiva_2_md.git
 cd normattiva_2_md
 pip install -e .
 normattiva2md input.xml output.md
@@ -95,7 +95,7 @@ normattiva2md input.xml output.md
 ### Esecuzione diretta (senza installazione)
 
 ```bash
-git clone https://github.com/aborruso/normattiva_2_md.git
+git clone https://github.com/ondata/normattiva_2_md.git
 cd normattiva_2_md
 python convert_akomantoso.py input.xml output.md
 ```
@@ -359,7 +359,7 @@ dataVigenza: 20251101
 ### Configurazione dell'ambiente di sviluppo
 
 ```bash
-git clone https://github.com/aborruso/normattiva_2_md.git
+git clone https://github.com/ondata/normattiva_2_md.git
 cd normattiva_2_md
 python -m venv venv
 source venv/bin/activate  # Su Windows: venv\Scripts\activate
@@ -411,8 +411,8 @@ I contributi sono benvenuti! Segui questi passaggi:
 
 ## 📞 Supporto
 
-- 🐛 **Segnalazioni di bug**: [pagina delle segnalazioni](https://github.com/aborruso/normattiva_2_md/issues)
-- 💡 **Proposte di nuove funzionalità**: [pagina delle segnalazioni](https://github.com/aborruso/normattiva_2_md/issues)
+- 🐛 **Segnalazioni di bug**: [pagina delle segnalazioni](https://github.com/ondata/normattiva_2_md/issues)
+- 💡 **Proposte di nuove funzionalità**: [pagina delle segnalazioni](https://github.com/ondata/normattiva_2_md/issues)
 
 ## 🏗️ Stato del progetto
 

@@ -40,7 +40,7 @@ Per la documentazione completa, visitare la pagina del nuovo pacchetto:
 
 **📦 PyPI:** https://pypi.org/project/normattiva2md/
 
-**📖 GitHub:** https://github.com/aborruso/normattiva_2_md
+**📖 GitHub:** https://github.com/ondata/normattiva_2_md
 
 ---
 

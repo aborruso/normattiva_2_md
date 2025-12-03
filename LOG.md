@@ -676,7 +676,7 @@ akoma2md "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto-legge:201
 - ✅ **Problema risolto**: Binari ora hanno nomi versione corretti (1.5.0)
 - ✅ **Tag corretto**: v1.5.0 punta al commit con funzionalità ricerca completa
 - ✅ **Workflow riuscito**: GitHub Actions completato con binari corretti generati
-- ✅ **Release creata**: https://github.com/aborruso/normattiva_2_md/releases/tag/v1.5.0
+- ✅ **Release creata**: https://github.com/ondata/normattiva_2_md/releases/tag/v1.5.0
 - ✅ **Binari disponibili**: Linux (21.9MB) e Windows (9.4MB) con versione corretta
 - ✅ **PyPI aggiornato**: Versione 1.5.0 disponibile per installazione
 - ✅ **Documentazione aggiornata**: Chiariti requisiti per funzionalità ricerca
