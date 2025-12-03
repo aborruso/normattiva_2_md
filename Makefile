@@ -6,8 +6,8 @@
 PYTHON := python3
 PIP := pip3
 PACKAGE_NAME := normattiva2md
-SCRIPT_NAME := convert_akomantoso.py
-MAIN_SCRIPT := convert_akomantoso.py
+SCRIPT_NAME := src/normattiva2md/cli.py
+MAIN_SCRIPT := src/normattiva2md/cli.py
 
 # Target di default
 help:
@@ -59,7 +59,7 @@ test:
 		$(PYTHON) -m unittest discover -s tests; \
 		if [ -f "20050516_005G0104_VIGENZA_20250130.xml" ]; then \
 			echo "Test 2: Script Python"; \
-			$(PYTHON) $(MAIN_SCRIPT) 20050516_005G0104_VIGENZA_20250130.xml test_output_python.md; \
+			$(PYTHON) -m normattiva2md.cli 20050516_005G0104_VIGENZA_20250130.xml test_output_python.md; \
 			echo "Test 3: Eseguibile standalone"; \
 			./dist/$(PACKAGE_NAME) 20050516_005G0104_VIGENZA_20250130.xml test_output_exe.md; \
 			echo "Test 4: Comando installato"; \

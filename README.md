@@ -97,7 +97,8 @@ normattiva2md input.xml output.md
 ```bash
 git clone https://github.com/ondata/normattiva_2_md.git
 cd normattiva_2_md
-python convert_akomantoso.py input.xml output.md
+pip install -e .
+normattiva2md input.xml output.md
 ```
 
 ## 💻 Utilizzo
@@ -399,7 +400,7 @@ Per creare un eseguibile autonomo per uso locale:
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --name normattiva2md convert_akomantoso.py
+pyinstaller --onefile --name normattiva2md src/normattiva2md/cli.py
 # L'eseguibile sarà in dist/normattiva2md
 ```
 
@@ -415,8 +416,8 @@ Ogni tag `v*` scatena la GitHub Action [`Build Releases`](.github/workflows/rele
 ### Test
 
 ```bash
-# Test di base
-python convert_akomantoso.py sample.xml output.md
+# Test di base (con package installato)
+normattiva2md sample.xml output.md
 
 # Test dell'eseguibile
 ./dist/normattiva2md sample.xml output.md

@@ -71,7 +71,7 @@ if [ -f "20050516_005G0104_VIGENZA_20250130.xml" ]; then
     fi
 
     # Test script Python
-    if python3 convert_akomantoso.py 20050516_005G0104_VIGENZA_20250130.xml test_final.md > /dev/null 2>&1; then
+    if python3 -m normattiva2md.cli 20050516_005G0104_VIGENZA_20250130.xml test_final.md > /dev/null 2>&1; then
         print_success "Test script Python: OK"
         rm -f test_final.md
     else
@@ -101,7 +101,7 @@ echo "📁 File sorgente (richiedono Python):"
 echo "┌─────────────────────────────────────────────────────────────┐"
 echo "│ SCRIPT PYTHON                                               │"
 echo "├─────────────────────────────────────────────────────────────┤"
-echo "│ 🐍 convert_akomantoso.py             Script principale       │"
+echo "│ 📦 src/normattiva2md/               Package principale      │"
 echo "│ 📦 setup.py                          Setup per pip install   │"
 echo "│ 📖 README.md                         Documentazione          │"
 echo "│ 📄 LICENSE                           Licenza MIT             │"
@@ -115,14 +115,17 @@ echo ""
 echo "🚀 ESEGUIBILE STANDALONE (Raccomandato):"
 echo "   ./dist/akoma2md input.xml output.md"
 echo ""
-echo "🐍 SCRIPT PYTHON:"
-echo "   python3 convert_akomantoso.py input.xml output.md"
+echo "📦 COMANDO INSTALLATO:"
+echo "   normattiva2md input.xml output.md"
+echo ""
+echo "🐍 MODULO PYTHON:"
+echo "   python3 -m normattiva2md.cli input.xml output.md"
 echo ""
 echo "📦 INSTALLAZIONE LOCALE (richiede virtual environment):"
 echo "   python3 -m venv venv"
 echo "   source venv/bin/activate"
 echo "   pip install -e ."
-echo "   akoma2md input.xml output.md"
+echo "   normattiva2md input.xml output.md"
 echo ""
 
 # 7. Build completa (opzionale)
