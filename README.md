@@ -400,7 +400,7 @@ Per creare un eseguibile autonomo per uso locale:
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --name normattiva2md src/normattiva2md/cli.py
+pyinstaller --onefile --name normattiva2md __main__.py
 # L'eseguibile sarà in dist/normattiva2md
 ```
 

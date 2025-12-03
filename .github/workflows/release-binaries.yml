@@ -32,7 +32,7 @@ jobs:
         run: echo "AKOMA_VERSION=$(python setup.py --version)" >> $GITHUB_ENV
 
       - name: Build binary
-        run: pyinstaller --onefile --name normattiva2md src/normattiva2md/cli.py
+        run: pyinstaller --onefile --name normattiva2md __main__.py
 
       - name: Copy XML fixture
         run: cp test_data/20050516_005G0104_VIGENZA_20250130.xml .
@@ -82,7 +82,7 @@ jobs:
 
       - name: Build binary
         shell: pwsh
-        run: pyinstaller --onefile --name normattiva2md src/normattiva2md/cli.py
+        run: pyinstaller --onefile --name normattiva2md __main__.py
 
       - name: Copy XML fixture
         shell: pwsh

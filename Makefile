@@ -6,8 +6,8 @@
 PYTHON := python3
 PIP := pip3
 PACKAGE_NAME := normattiva2md
-SCRIPT_NAME := src/normattiva2md/cli.py
-MAIN_SCRIPT := src/normattiva2md/cli.py
+SCRIPT_NAME := __main__.py
+MAIN_SCRIPT := __main__.py
 
 # Target di default
 help:
