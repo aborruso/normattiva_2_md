@@ -5,7 +5,7 @@ from pathlib import Path
 import tempfile
 import os
 
-from convert_akomantoso import (
+from src.normattiva2md.markdown_converter import (
     generate_markdown_text,
     clean_text_content,
     process_table,
@@ -13,14 +13,16 @@ from convert_akomantoso import (
     process_part,
     process_attachment,
     generate_front_matter,
-    extract_metadata_from_xml,
-    validate_normattiva_url,
-    sanitize_output_path,
-    is_normattiva_url,
-    lookup_normattiva_url,
-    extract_params_from_normattiva_url,
-    MAX_FILE_SIZE_BYTES,
 )
+from src.normattiva2md.xml_parser import extract_metadata_from_xml
+from src.normattiva2md.normattiva_api import (
+    validate_normattiva_url,
+    is_normattiva_url,
+    extract_params_from_normattiva_url,
+)
+from src.normattiva2md.utils import sanitize_output_path
+from src.normattiva2md.exa_api import lookup_normattiva_url
+from src.normattiva2md.constants import MAX_FILE_SIZE_BYTES
 
 
 FIXTURE_PATH = (

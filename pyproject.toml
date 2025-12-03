@@ -3,7 +3,7 @@ requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "akoma2md"
+name = "normattiva2md"
 version = "2.0.18"
 description = "Convertitore da XML Akoma Ntoso a formato Markdown con download automatico delle leggi citate e cross-references inline (CLI: normattiva2md)"
 readme = "README.md"
@@ -40,8 +40,7 @@ Repository = "https://github.com/aborruso/normattiva_2_md"
 Issues = "https://github.com/aborruso/normattiva_2_md/issues"
 
 [project.scripts]
-akoma2md = "convert_akomantoso:main"
-normattiva2md = "convert_akomantoso:main"
+normattiva2md = "normattiva2md.cli:main"
 
-[tool.setuptools]
-py-modules = ["convert_akomantoso"]
+[tool.setuptools.packages.find]
+where = ["src"] # Scansiona pacchetti in src/
