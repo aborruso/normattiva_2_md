@@ -9,7 +9,7 @@ from .normattiva_api import (
     is_normattiva_url,
     validate_normattiva_url,
     extract_params_from_normattiva_url,
-    download_akoma_ntoso
+    download_akoma_ntoso,
 )
 from .exa_api import lookup_normattiva_url
 from .akoma_utils import parse_article_reference
@@ -18,8 +18,9 @@ from .multi_document import convert_with_references
 from .provvedimenti_api import (
     extract_law_params_from_url,
     fetch_all_provvedimenti,
-    write_provvedimenti_csv
+    write_provvedimenti_csv,
 )
+
 
 def main():
     """
@@ -240,32 +241,55 @@ def main():
 
             # Chiedi se vuole scaricare
             try:
-                download_choice = input("\n📥 Vuoi scaricare questo documento? (s/N): ").strip().lower()
-                if download_choice not in ['s', 'si', 'sì', 'y', 'yes']:
+                download_choice = (
+                    input("\n📥 Vuoi scaricare questo documento? (s/N): ")
+                    .strip()
+                    .lower()
+                )
+                if download_choice not in ["s", "si", "sì", "y", "yes"]:
                     print("📄 Mostro il documento su stdout...", file=sys.stderr)
                     input_source = selected_url
                     output_file = None  # Output su stdout
                 else:
                     # Genera nome file snake_case
                     suggested_filename = generate_snake_case_filename(selected_title)
-                    filename_input = input(f"📝 Nome file [{suggested_filename}]: ").strip()
+                    filename_input = input(
+                        f"📝 Nome file [{suggested_filename}]: "
+                    ).strip()
 
                     # Valida input: ignora risposte di conferma troppo corte
-                    if filename_input and filename_input.lower() not in ['s', 'si', 'sì', 'y', 'yes', 'n', 'no']:
+                    if filename_input and filename_input.lower() not in [
+                        "s",
+                        "si",
+                        "sì",
+                        "y",
+                        "yes",
+                        "n",
+                        "no",
+                    ]:
                         output_file = filename_input
-                        if not output_file.endswith('.md'):
-                            output_file += '.md'
+                        if not output_file.endswith(".md"):
+                            output_file += ".md"
                     elif filename_input and len(filename_input) <= 2:
                         # Input troppo corto probabilmente è un errore, usa il suggerito
-                        print(f"⚠️  Nome troppo corto, uso il nome suggerito: {suggested_filename}", file=sys.stderr)
+                        print(
+                            f"⚠️  Nome troppo corto, uso il nome suggerito: {suggested_filename}",
+                            file=sys.stderr,
+                        )
                         output_file = suggested_filename
                     else:
                         output_file = suggested_filename
 
                     # Verifica se il file esiste già
                     if os.path.exists(output_file):
-                        overwrite = input(f"⚠️  Il file '{output_file}' esiste già. Sovrascrivere? (s/N): ").strip().lower()
-                        if overwrite not in ['s', 'si', 'sì', 'y', 'yes']:
+                        overwrite = (
+                            input(
+                                f"⚠️  Il file '{output_file}' esiste già. Sovrascrivere? (s/N): "
+                            )
+                            .strip()
+                            .lower()
+                        )
+                        if overwrite not in ["s", "si", "sì", "y", "yes"]:
                             print("❌ Download annullato dall'utente", file=sys.stderr)
                             sys.exit(0)
 
@@ -343,7 +367,9 @@ def main():
             os.close(temp_fd)  # Close file descriptor, we'll write with requests
 
             # Scarica XML
-            if not download_akoma_ntoso(params, xml_temp_path, session, quiet=quiet_mode):
+            if not download_akoma_ntoso(
+                params, xml_temp_path, session, quiet=quiet_mode
+            ):
                 print("❌ Errore durante il download del file XML", file=sys.stderr)
                 sys.exit(1)
 
@@ -370,15 +396,24 @@ def main():
                 )  # Include original article ref for reference
 
             success = convert_akomantoso_to_markdown_improved(
-                xml_temp_path, output_file, metadata, article_ref, with_urls=args.with_urls
+                xml_temp_path,
+                output_file,
+                metadata,
+                article_ref,
+                with_urls=args.with_urls,
             )
 
             if success:
                 if not quiet_mode:
                     if output_file:
-                        print(f"✅ Conversione completata: {output_file}", file=sys.stderr)
+                        print(
+                            f"✅ Conversione completata: {output_file}", file=sys.stderr
+                        )
                     else:
-                        print(f"✅ Conversione completata (output a stdout)", file=sys.stderr)
+                        print(
+                            f"✅ Conversione completata (output a stdout)",
+                            file=sys.stderr,
+                        )
 
                 # Rimuovi XML temporaneo se non richiesto diversamente
                 if not args.keep_xml:
@@ -436,7 +471,10 @@ def main():
             sys.exit(1)
 
         if not quiet_mode:
-            print(f"\n🔍 Searching for implementation measures for law {numero}/{anno}...", file=sys.stderr)
+            print(
+                f"\n🔍 Ricerca provvedimenti attuativi per la legge {numero}/{anno}...",
+                file=sys.stderr,
+            )
 
         provvedimenti_data = fetch_all_provvedimenti(numero, anno, quiet=quiet_mode)
 
@@ -450,7 +488,7 @@ def main():
         elif not provvedimenti_data:
             # No results found
             print(
-                f"No implementation measures found for law {numero}/{anno}",
+                f"Nessun provvedimento attuativo trovato per la legge {numero}/{anno}",
                 file=sys.stderr,
             )
             # Continue - this is not an error

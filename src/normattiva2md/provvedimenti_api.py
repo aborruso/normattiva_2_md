@@ -25,7 +25,7 @@ def extract_law_params_from_url(url):
         tuple: (year, number) or (None, None) if not found
     """
     # Match URN patterns like: urn:nir:stato:legge:2024;207 or urn:nir:stato:legge:2024-03-01;207
-    urn_match = re.search(r'urn:nir:stato:[^:]+:(\d{4})(?:-\d{2}-\d{2})?[;-](\d+)', url)
+    urn_match = re.search(r"urn:nir:stato:[^:]+:(\d{4})(?:-\d{2}-\d{2})?[;-](\d+)", url)
     if urn_match:
         return urn_match.group(1), urn_match.group(2)
     return None, None
@@ -66,9 +66,12 @@ def fetch_provvedimenti_page(numero, anno, page=0, quiet=False):
 
     if not quiet:
         if page == 0:
-            print(f"Fetching implementation measures for law {numero}/{anno}...", file=sys.stderr)
+            print(
+                f"Recupero provvedimenti attuativi per la legge {numero}/{anno}...",
+                file=sys.stderr,
+            )
         else:
-            print(f"Fetching page {page}...", file=sys.stderr)
+            print(f"Recupero pagina {page}...", file=sys.stderr)
 
     headers = {
         "User-Agent": f"normattiva2md/{VERSION} (https://github.com/ondata/normattiva_2_md)",
@@ -99,41 +102,44 @@ def parse_provvedimenti_html(html_content):
     results = []
 
     # Check for "Nessun risultato" message
-    if "Nessun risultato." in html_content or "Nessun provvedimento trovato" in html_content:
+    if (
+        "Nessun risultato." in html_content
+        or "Nessun provvedimento trovato" in html_content
+    ):
         return results
 
     # Find table rows - pattern matches <tr> tags with content
     # Skip header row by looking for <td> tags (data rows)
-    row_pattern = r'<tr>(.*?)</tr>'
+    row_pattern = r"<tr>(.*?)</tr>"
     all_rows = re.findall(row_pattern, html_content, re.DOTALL | re.IGNORECASE)
 
     # Filter to only rows with <td> (data rows, not headers)
-    data_rows = [row for row in all_rows if '<td' in row.lower()]
+    data_rows = [row for row in all_rows if "<td" in row.lower()]
 
     for row_content in data_rows:
         # Extract all <td> cells from this row
-        cell_pattern = r'<td[^>]*>(.*?)</td>'
+        cell_pattern = r"<td[^>]*>(.*?)</td>"
         cells = re.findall(cell_pattern, row_content, re.DOTALL | re.IGNORECASE)
 
         if len(cells) >= 7:  # Should have 7 columns
             # Extract text from cells, removing HTML tags
             def clean_cell(text):
                 # Remove HTML tags
-                text = re.sub(r'<[^>]+>', '', text)
+                text = re.sub(r"<[^>]+>", "", text)
                 # Decode HTML entities
-                text = text.replace('&#xB0;', '°')
-                text = text.replace('&#x27;', "'")
-                text = text.replace('&#xE0;', 'à')
-                text = text.replace('&#xE8;', 'è')
-                text = text.replace('&#xE9;', 'é')
-                text = text.replace('&#xEC;', 'ì')
-                text = text.replace('&#xF2;', 'ò')
-                text = text.replace('&#xF9;', 'ù')
-                text = text.replace('&#x22EF;', '⋯')
-                text = text.replace('&amp;', '&')
-                text = text.replace('&quot;', '"')
-                text = text.replace('&lt;', '<')
-                text = text.replace('&gt;', '>')
+                text = text.replace("&#xB0;", "°")
+                text = text.replace("&#x27;", "'")
+                text = text.replace("&#xE0;", "à")
+                text = text.replace("&#xE8;", "è")
+                text = text.replace("&#xE9;", "é")
+                text = text.replace("&#xEC;", "ì")
+                text = text.replace("&#xF2;", "ò")
+                text = text.replace("&#xF9;", "ù")
+                text = text.replace("&#x22EF;", "⋯")
+                text = text.replace("&amp;", "&")
+                text = text.replace("&quot;", '"')
+                text = text.replace("&lt;", "<")
+                text = text.replace("&gt;", ">")
                 # Strip whitespace
                 return text.strip()
 
@@ -151,22 +157,28 @@ def parse_provvedimenti_html(html_content):
             if len(cells) > 6:
                 link_match_prov = re.search(r'href="([^"]+)"', cells[6])
                 if link_match_prov:
-                    link_al_provvedimento = cells[6]  # Keep raw HTML for now or extract properly
+                    link_al_provvedimento = cells[
+                        6
+                    ]  # Keep raw HTML for now or extract properly
                     # Try to extract URL
                     url_match = re.search(r'href="([^"]+)"', cells[6])
                     if url_match:
                         link_url = url_match.group(1)
-                        if link_url.startswith('http'):
+                        if link_url.startswith("http"):
                             link_al_provvedimento = link_url
                         else:
-                            link_al_provvedimento = "https://www.programmagoverno.gov.it" + link_url
+                            link_al_provvedimento = (
+                                "https://www.programmagoverno.gov.it" + link_url
+                            )
 
             result = {
                 "dettagli": dettagli,  # Column 0 - details link icon
                 "governo": clean_cell(cells[1]),  # Column 1 - Government
                 "fonte_provvedimento": clean_cell(cells[2]),  # Column 2 - Source law
                 "oggetto": clean_cell(cells[3]),  # Column 3 - Subject/description
-                "provvedimento_previsto": clean_cell(cells[4]),  # Column 4 - Expected measure type
+                "provvedimento_previsto": clean_cell(
+                    cells[4]
+                ),  # Column 4 - Expected measure type
                 "adozione": clean_cell(cells[5]),  # Column 5 - Adoption status
                 "link_al_provvedimento": link_al_provvedimento,  # Column 6 - Link to measure
             }
@@ -189,17 +201,19 @@ def has_next_page(html_content):
     # or "next page" style links
     next_patterns = [
         r'href="[^"]*page=\d+',  # Any page link with page parameter
-        r'pagination-next',  # Common pagination class
+        r"pagination-next",  # Common pagination class
         r'aria-label="[Pp]agina successiva"',  # Italian "next page"
-        r'>Avanti<',  # Italian "forward"
-        r'>Next<',
+        r">Avanti<",  # Italian "forward"
+        r">Next<",
     ]
 
     for pattern in next_patterns:
         if re.search(pattern, html_content, re.IGNORECASE):
             # Additional check: make sure we're not on the last page
             # by looking for disabled next button
-            if not re.search(r'pagination-next[^>]*disabled', html_content, re.IGNORECASE):
+            if not re.search(
+                r"pagination-next[^>]*disabled", html_content, re.IGNORECASE
+            ):
                 return True
 
     return False
@@ -231,7 +245,10 @@ def fetch_all_provvedimenti(numero, anno, quiet=False):
                 return None  # Fatal error on first page
             else:
                 # Partial results fetched, return what we have
-                print(f"Warning: Failed to fetch page {page}, returning {len(all_results)} results", file=sys.stderr)
+                print(
+                    f"Warning: Failed to fetch page {page}, returning {len(all_results)} results",
+                    file=sys.stderr,
+                )
                 break
 
         page_results = parse_provvedimenti_html(html_content)
@@ -293,10 +310,12 @@ def prompt_overwrite(filepath):
         bool: True if user confirms, False otherwise
     """
     while True:
-        response = input(f"File {filepath} already exists. Overwrite? (y/n): ").strip().lower()
-        if response in ['y', 'yes']:
+        response = (
+            input(f"File {filepath} already exists. Overwrite? (y/n): ").strip().lower()
+        )
+        if response in ["y", "yes"]:
             return True
-        elif response in ['n', 'no']:
+        elif response in ["n", "no"]:
             print("Aborted.", file=sys.stderr)
             return False
         else:
@@ -333,8 +352,10 @@ def export_provvedimenti_csv(data, filepath):
         if output_dir and not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
-        with open(filepath, 'w', newline='', encoding='utf-8') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames, quoting=csv.QUOTE_MINIMAL)
+        with open(filepath, "w", newline="", encoding="utf-8") as csvfile:
+            writer = csv.DictWriter(
+                csvfile, fieldnames=fieldnames, quoting=csv.QUOTE_MINIMAL
+            )
             writer.writeheader()
             writer.writerows(data)
 
@@ -372,6 +393,9 @@ def write_provvedimenti_csv(data, anno, numero, output_file, quiet=False):
     success = export_provvedimenti_csv(data, csv_path)
 
     if success and not quiet:
-        print(f"Exported {len(data)} implementation measures to {csv_path}", file=sys.stderr)
+        print(
+            f"Exported {len(data)} implementation measures to {csv_path}",
+            file=sys.stderr,
+        )
 
     return success
