@@ -34,6 +34,7 @@ legge_*.md
 
 # Build artifacts
 akoma2md.egg-info/
+src/normattiva2md.egg-info/
 build/
 dist/
 .env
